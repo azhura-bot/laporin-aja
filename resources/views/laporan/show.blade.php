@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.dashboard.index')
 
 @section('dashboard-content')
 <div class="fade-in max-w-3xl mx-auto">

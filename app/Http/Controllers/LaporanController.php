@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Warga;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Laporan;
@@ -10,16 +10,9 @@ use Illuminate\Support\Facades\Storage;
 
 class LaporanController extends Controller
 {
-    /**
-     * Constructor - middleware auth
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
-     * Display a listing of the resource (INDEX)
+     * Menampilkan semua laporan milik user
      */
     public function index()
     {
@@ -31,7 +24,7 @@ class LaporanController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource (CREATE)
+     * Menampilkan form buat laporan
      */
     public function create()
     {
@@ -50,11 +43,10 @@ class LaporanController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage (STORE)
+     * Menyimpan laporan baru
      */
     public function store(Request $request)
     {
-        // Validasi data
         $validated = $request->validate([
             'nama_pelapor' => 'required|string|max:255',
             'no_hp' => 'required|string|max:15',
@@ -64,10 +56,10 @@ class LaporanController extends Controller
             'tanggal_kejadian' => 'required|date',
             'judul_laporan' => 'required|string|max:255',
             'deskripsi' => 'required|string|min:10',
-            'lampiran' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120' // Max 5MB
+            'lampiran' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120'
         ]);
 
-        // Handle upload file lampiran
+        // Upload file
         $lampiranPath = null;
         if ($request->hasFile('lampiran')) {
             $file = $request->file('lampiran');
@@ -76,7 +68,7 @@ class LaporanController extends Controller
         }
 
         // Simpan ke database
-        $laporan = Laporan::create([
+        Laporan::create([
             'nama_pelapor' => $validated['nama_pelapor'],
             'no_hp' => $validated['no_hp'],
             'email' => $validated['email'],
@@ -90,30 +82,26 @@ class LaporanController extends Controller
             'status' => 'pending'
         ]);
 
-        return redirect()->route('laporan.show', $laporan->id)
+        return redirect()->route('laporan.index')
                          ->with('success', 'Laporan berhasil dikirim!');
     }
 
     /**
-     * Display the specified resource (SHOW)
+     * Menampilkan detail laporan
      */
     public function show($id)
     {
-        $laporan = Laporan::where('user_id', Auth::id())
-                          ->findOrFail($id);
-        
+        $laporan = Laporan::where('user_id', Auth::id())->findOrFail($id);
         return view('laporan.show', compact('laporan'));
     }
 
     /**
-     * Show the form for editing the specified resource (EDIT)
+     * Menampilkan form edit laporan
      */
     public function edit($id)
     {
-        $laporan = Laporan::where('user_id', Auth::id())
-                          ->findOrFail($id);
+        $laporan = Laporan::where('user_id', Auth::id())->findOrFail($id);
         
-        // Cek status, jika sudah diproses/selesai tidak bisa diedit
         if ($laporan->status != 'pending') {
             return redirect()->route('laporan.show', $laporan->id)
                              ->with('error', 'Laporan yang sudah diproses tidak dapat diedit!');
@@ -134,20 +122,17 @@ class LaporanController extends Controller
     }
 
     /**
-     * Update the specified resource in storage (UPDATE)
+     * Mengupdate laporan
      */
     public function update(Request $request, $id)
     {
-        $laporan = Laporan::where('user_id', Auth::id())
-                          ->findOrFail($id);
+        $laporan = Laporan::where('user_id', Auth::id())->findOrFail($id);
         
-        // Cek status
         if ($laporan->status != 'pending') {
             return redirect()->route('laporan.show', $laporan->id)
                              ->with('error', 'Laporan yang sudah diproses tidak dapat diubah!');
         }
         
-        // Validasi
         $validated = $request->validate([
             'nama_pelapor' => 'required|string|max:255',
             'no_hp' => 'required|string|max:15',
@@ -160,9 +145,8 @@ class LaporanController extends Controller
             'lampiran' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120'
         ]);
         
-        // Handle upload file baru
+        // Upload file baru
         if ($request->hasFile('lampiran')) {
-            // Hapus file lama jika ada
             if ($laporan->lampiran && Storage::disk('public')->exists($laporan->lampiran)) {
                 Storage::disk('public')->delete($laporan->lampiran);
             }
@@ -173,7 +157,6 @@ class LaporanController extends Controller
             $validated['lampiran'] = $lampiranPath;
         }
         
-        // Update data
         $laporan->update($validated);
         
         return redirect()->route('laporan.show', $laporan->id)
@@ -181,14 +164,12 @@ class LaporanController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage (DESTROY)
+     * Menghapus laporan
      */
     public function destroy($id)
     {
-        $laporan = Laporan::where('user_id', Auth::id())
-                          ->findOrFail($id);
+        $laporan = Laporan::where('user_id', Auth::id())->findOrFail($id);
         
-        // Cek status
         if ($laporan->status != 'pending') {
             return redirect()->route('laporan.index')
                              ->with('error', 'Laporan yang sudah diproses tidak dapat dihapus!');
@@ -199,7 +180,6 @@ class LaporanController extends Controller
             Storage::disk('public')->delete($laporan->lampiran);
         }
         
-        // Hapus data
         $laporan->delete();
         
         return redirect()->route('laporan.index')
