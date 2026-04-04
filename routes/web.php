@@ -1,37 +1,58 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Warga\LaporanController;
-use App\Http\Controllers\Warga\WargaController; // <-- Tambahkan ini!
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\RelawanController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
+use App\Http\Controllers\Admin\RelawanController as AdminRelawanController;
+use App\Http\Controllers\Admin\AnalisisController;
+use App\Http\Controllers\Admin\KelolaStatusController;
+use App\Http\Controllers\Admin\BalasWargaController;
 
+// Route untuk halaman public
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+// Route auth (dari Breeze)
+require __DIR__.'/auth.php';
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
-
-// Opsi 1: Jika hanya menampilkan view biasa
-Route::get('/portal-warga', function () {
-    return view('portal.warga');
-})->name('warga.portal');
-
-// Tambahkan pengecekan apakah WargaController ada
-Route::get('/warga/dashboard', [WargaController::class, 'dashboard'])->name('warga.dashboard');
-Route::get('/warga/laporan', [WargaController::class, 'laporan'])->name('warga.laporan');
-Route::post('/warga/laporan/store', [WargaController::class, 'store'])->name('warga.laporan.store');
-
+// Route untuk user biasa (warga)
 Route::middleware(['auth'])->group(function () {
-    // Dashboard utama
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    // Dashboard user
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Resource Laporan
+    // Resource Laporan (INI PENTING!)
     Route::resource('laporan', LaporanController::class);
+    
+    // Resource Relawan
+    Route::resource('relawan', RelawanController::class);
+});
+
+// Route Admin (dengan middleware admin)
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard Admin
+    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+    
+    // Kelola Laporan
+    Route::resource('laporan', AdminLaporanController::class);
+    Route::put('laporan/{id}/status', [AdminLaporanController::class, 'updateStatus'])->name('laporan.updateStatus');
+    
+    // Data Analisis
+    Route::get('/analisis', [AnalisisController::class, 'index'])->name('analisis');
+    
+    // Kelola Status
+    Route::get('/kelola-status', [KelolaStatusController::class, 'index'])->name('kelola-status');
+    Route::put('/kelola-status/{id}', [KelolaStatusController::class, 'update'])->name('kelola-status.update');
+    Route::post('/kelola-status/bulk', [KelolaStatusController::class, 'bulkUpdate'])->name('kelola-status.bulk');
+    
+    // Balas Warga
+    Route::get('/balas-warga', [BalasWargaController::class, 'index'])->name('balas-warga');
+    Route::post('/balas-warga/{id}', [BalasWargaController::class, 'store'])->name('balas-warga.store');
+    
+    // Kelola Relawan
+    Route::resource('relawan', AdminRelawanController::class);
+    Route::put('relawan/{id}/status', [AdminRelawanController::class, 'updateStatus'])->name('relawan.updateStatus');
 });

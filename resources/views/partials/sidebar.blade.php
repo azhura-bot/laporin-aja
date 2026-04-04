@@ -26,6 +26,11 @@
 </div>
         
         <!-- Navigation -->
+        <a href="{{ route('dashboard') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }} transition group">
+                <i class="fas fa-tachometer-alt w-5 {{ request()->routeIs('dashboard') ? 'text-white' : 'text-gray-400' }}"></i>
+                <span>Dashboard</span>
+            </a>
         <a href="{{ route('laporan.create') }}" 
                class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('laporan.create') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }} transition group">
                 <i class="fas fa-plus-circle w-5"></i>

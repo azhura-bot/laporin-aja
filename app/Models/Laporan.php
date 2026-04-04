@@ -49,6 +49,14 @@ class Laporan extends Model
     }
 
     /**
+     * Relasi ke Tanggapan
+     */
+    public function tanggapan()
+    {
+        return $this->hasMany(Tanggapan::class);
+    }
+
+    /**
      * Accessor untuk status dalam format Indonesia
      */
     public function getStatusTextAttribute()
