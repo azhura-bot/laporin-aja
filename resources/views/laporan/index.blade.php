@@ -1,4 +1,4 @@
-@extends('layouts.dashboard.index')
+@extends('layouts.dashboard')
 
 @section('dashboard-content')
 <div class="fade-in">

@@ -1,109 +1,214 @@
 @extends('layouts.dashboard.index')
 
 @section('dashboard-content')
-<div class="fade-in max-w-3xl mx-auto">
-    <div class="flex justify-between items-center mb-6">
+<div class="fade-in max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Detail Laporan</h1>
-        <a href="{{ route('laporan.index') }}" class="text-gray-600 hover:text-gray-800">
-            <i class="fas fa-arrow-left mr-1"></i>Kembali
-        </a>
+        <p class="text-gray-500">Informasi lengkap tentang laporan Anda</p>
     </div>
 
-    @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            {{ session('success') }}
+    <!-- Search Section - Grid 2 Column -->
+    <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+            <div class="md:col-span-10">
+                <label class="block text-gray-700 text-sm font-medium mb-1">Masukan ID Laporan</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" id="searchId" placeholder="Contoh: LAP-2024-001" 
+                           class="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                </div>
+            </div>
+            <div class="md:col-span-2 flex items-end">
+                <button id="btnSearch" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition flex items-center justify-center gap-2">
+                    <i class="fas fa-search"></i>
+                    <span>Cari</span>
+                </button>
+            </div>
         </div>
-    @endif
+    </div>
 
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <!-- Header -->
+    <!-- Detail Laporan Card -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
+        <!-- Status Badge -->
         <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-bold text-white">{{ $laporan->judul_laporan }}</h2>
-                {!! $laporan->status_badge !!}
+                <span class="px-3 py-1 bg-yellow-500 text-white text-sm rounded-full">
+                    <i class="fas fa-clock mr-1"></i> Dalam Proses
+                </span>
             </div>
         </div>
 
         <!-- Content -->
         <div class="p-6">
-            <!-- Data Pelapor -->
+            <!-- Informasi Laporan -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <p class="text-gray-500 text-sm">Tanggal Kejadian</p>
+                    <p class="font-medium text-gray-800">{{ $laporan->tanggal_kejadian->format('d F Y') }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm">Lokasi</p>
+                    <p class="font-medium text-gray-800">{{ $laporan->lokasi }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm">Kategori</p>
+                    <p class="font-medium text-gray-800">{{ $laporan->kategori }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm">ID Laporan</p>
+                    <p class="font-medium text-gray-800">#{{ $laporan->id }}</p>
+                </div>
+            </div>
+
+            <!-- Status Timeline -->
             <div class="mb-6">
-                <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-3">Data Pelapor</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-gray-500 text-sm">Nama</p>
-                        <p class="font-medium">{{ $laporan->nama_pelapor }}</p>
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Status Laporan</h3>
+                <div class="flex flex-wrap gap-4">
+                    <div class="flex-1 text-center">
+                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-paper-plane text-white"></i>
+                        </div>
+                        <p class="font-medium text-sm">Dikirim</p>
+                        <p class="text-xs text-gray-500">{{ $laporan->created_at->format('d/m/Y') }}</p>
                     </div>
-                    <div>
-                        <p class="text-gray-500 text-sm">No. HP</p>
-                        <p class="font-medium">{{ $laporan->no_hp }}</p>
+                    <div class="flex-1 text-center">
+                        <div class="w-12 h-12 {{ $laporan->status == 'diproses' || $laporan->status == 'selesai' ? 'bg-blue-500' : 'bg-gray-300' }} rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-spinner text-white"></i>
+                        </div>
+                        <p class="font-medium text-sm">Diproses</p>
+                        <p class="text-xs text-gray-500">-</p>
                     </div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Email</p>
-                        <p class="font-medium">{{ $laporan->email }}</p>
+                    <div class="flex-1 text-center">
+                        <div class="w-12 h-12 {{ $laporan->status == 'selesai' ? 'bg-purple-500' : 'bg-gray-300' }} rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-tools text-white"></i>
+                        </div>
+                        <p class="font-medium text-sm">Ditindaklanjuti</p>
+                        <p class="text-xs text-gray-500">-</p>
+                    </div>
+                    <div class="flex-1 text-center">
+                        <div class="w-12 h-12 {{ $laporan->status == 'selesai' ? 'bg-green-500' : 'bg-gray-300' }} rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-check-circle text-white"></i>
+                        </div>
+                        <p class="font-medium text-sm">Selesai</p>
+                        <p class="text-xs text-gray-500">-</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Detail Pengaduan -->
+            <!-- Riwayat Laporan -->
             <div class="mb-6">
-                <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-3">Detail Pengaduan</h3>
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Riwayat Laporan</h3>
                 <div class="space-y-3">
-                    <div>
-                        <p class="text-gray-500 text-sm">Kategori</p>
-                        <p class="font-medium">{{ $laporan->kategori }}</p>
+                    <div class="flex gap-3">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-green-600 text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-800">Laporan diterima</p>
+                            <p class="text-sm text-gray-500">{{ $laporan->created_at->format('d F Y H:i') }}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Lokasi Kejadian</p>
-                        <p class="font-medium">{{ $laporan->lokasi }}</p>
+                    <div class="flex gap-3">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user-check text-blue-600 text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-800">Diproses oleh Admin</p>
+                            <p class="text-sm text-gray-500">{{ $laporan->updated_at->format('d F Y H:i') }}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Tanggal Kejadian</p>
-                        <p class="font-medium">{{ $laporan->tanggal_kejadian->format('d F Y') }}</p>
+                    @if($laporan->status == 'selesai')
+                    <div class="flex gap-3">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-hard-hat text-purple-600 text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-800">Diteruskan ke staf lapangan</p>
+                            <p class="text-sm text-gray-500">-</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Deskripsi</p>
-                        <p class="text-gray-700">{{ $laporan->deskripsi }}</p>
+                    <div class="flex gap-3">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check-double text-green-600 text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-800">Perbaikan telah selesai</p>
+                            <p class="text-sm text-gray-500">-</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Tanggal Laporan</p>
-                        <p class="font-medium">{{ $laporan->created_at->format('d F Y H:i') }}</p>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Respon Admin -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Respon Admin</h3>
+                <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-500">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-comment-dots text-blue-600 mt-0.5"></i>
+                        <div>
+                            <p class="text-gray-700">
+                                @if($laporan->status == 'pending')
+                                    Laporan Anda telah kami terima dan akan segera diproses.
+                                @elseif($laporan->status == 'diproses')
+                                    Kami sedang menindaklanjuti laporan Anda. Mohon ditunggu.
+                                @else
+                                    Laporan Anda telah selesai ditindaklanjuti. Terima kasih atas partisipasinya.
+                                @endif
+                            </p>
+                            <p class="text-xs text-blue-600 mt-2">{{ $laporan->updated_at->format('d F Y H:i') }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Lampiran -->
-            @if($laporan->lampiran)
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-3">Lampiran Bukti</h3>
-                @if($laporan->is_lampiran_image)
-                    <img src="{{ $laporan->lampiran_url }}" alt="Lampiran" class="max-w-full rounded-lg shadow">
-                @else
-                    <a href="{{ $laporan->lampiran_url }}" target="_blank" class="text-blue-600 hover:underline">
-                        <i class="fas fa-download mr-1"></i>Download Lampiran
-                    </a>
-                @endif
+            <!-- Tombol Aksi -->
+            <div class="flex flex-wrap gap-3 pt-4 border-t">
+                <button onclick="window.print()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
+                    <i class="fas fa-download"></i>
+                    <span>Unduh Laporan</span>
+                </button>
+                <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Kirim Ulang</span>
+                </button>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Tambah Informasi</span>
+                </button>
             </div>
-            @endif
-
-            <!-- Actions -->
-            @if($laporan->status == 'pending')
-            <div class="flex gap-3 pt-4 border-t">
-                <a href="{{ route('laporan.edit', $laporan->id) }}" 
-                   class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition">
-                    <i class="fas fa-edit mr-1"></i>Edit Laporan
-                </a>
-                <form action="{{ route('laporan.destroy', $laporan->id) }}" method="POST" 
-                      onsubmit="return confirm('Yakin ingin menghapus laporan ini?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition">
-                        <i class="fas fa-trash mr-1"></i>Hapus Laporan
-                    </button>
-                </form>
-            </div>
-            @endif
         </div>
     </div>
 </div>
+
+<script>
+    // Fungsi pencarian berdasarkan ID
+    document.getElementById('btnSearch').addEventListener('click', function() {
+        const searchId = document.getElementById('searchId').value;
+        if (searchId) {
+            window.location.href = '/laporan/' + searchId;
+        } else {
+            alert('Masukkan ID Laporan terlebih dahulu');
+        }
+    });
+    
+    // Enter key untuk search
+    document.getElementById('searchId').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('btnSearch').click();
+        }
+    });
+</script>
 @endsection

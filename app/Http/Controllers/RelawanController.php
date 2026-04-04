@@ -9,10 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class RelawanController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     public function create()
     {
@@ -30,11 +26,12 @@ class RelawanController extends Controller
     {
         $validated = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'no_hp' => 'required|string|max:15',
-            'alamat' => 'required|string',
-            'keahlian' => 'nullable|string|max:255',
-            'ketersediaan_waktu' => 'nullable|string|max:100',
-            'motivasi' => 'nullable|string'
+            'domisili' => 'required|string|max:255',
+            'keahlian' => 'required|string|max:255',
+            'motivasi' => 'nullable|string|min:20',
+            'syarat_setuju' => 'required|accepted'
         ]);
 
         $sudahRelawan = Relawan::where('user_id', Auth::id())->exists();
@@ -47,10 +44,10 @@ class RelawanController extends Controller
         Relawan::create([
             'user_id' => Auth::id(),
             'nama_lengkap' => $validated['nama_lengkap'],
+            'email' => $validated['email'],
             'no_hp' => $validated['no_hp'],
-            'alamat' => $validated['alamat'],
-            'keahlian' => $validated['keahlian'] ?? null,
-            'ketersediaan_waktu' => $validated['ketersediaan_waktu'] ?? null,
+            'domisili' => $validated['domisili'],
+            'keahlian' => $validated['keahlian'],
             'motivasi' => $validated['motivasi'] ?? null,
             'status' => 'pending'
         ]);
