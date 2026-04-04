@@ -23,18 +23,6 @@
                 <span class="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
             </a></li>
         </ul>
-
-        <!-- GROUP BUTTON: PORTAL WARGA (OUTLINE) + PORTAL ADMIN (SOLID) -->
-        <div class="hidden md:flex items-center gap-3">
-            <!-- TOMBOL PORTAL WARGA - STYLE OUTLINE (seperti "Pelajari Lebih") -->
-            @if(Route::has('warga.portal'))
-                <a href="{{ route('warga.portal') }}" class="group relative px-5 py-2.5 bg-transparent border-2 border-blue-600 text-blue-600 font-medium rounded-full hover:bg-blue-600 hover:text-white transition duration-300 shadow-sm hover:shadow-md overflow-hidden">
-                    <span class="relative z-10 flex items-center gap-2">
-                        <i class="fas fa-users text-sm"></i>
-                        Portal Warga
-                    </span>
-                </a>
-            @endif
             
             <!-- TOMBOL PORTAL ADMIN - STYLE SOLID (seperti "Buat Laporan") -->
             <a href="{{ route('login') }}" class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-full hover:from-blue-700 hover:to-blue-800 transition duration-300 shadow-md hover:shadow-lg flex items-center gap-2">

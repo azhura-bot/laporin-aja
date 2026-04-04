@@ -11,20 +11,31 @@ use App\Http\Controllers\Admin\AnalisisController;
 use App\Http\Controllers\Admin\KelolaStatusController;
 use App\Http\Controllers\Admin\BalasWargaController;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
 // Route untuk halaman public
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
+// Route untuk halaman portal warga (tanpa auth)
+Route::get('/portal-warga', function () {
+    return view('portal.warga');
+})->name('warga.portal');
+
 // Route auth (dari Breeze)
 require __DIR__.'/auth.php';
 
-// Route untuk user biasa (warga)
+// Route untuk user biasa (warga) - membutuhkan autentikasi
 Route::middleware(['auth'])->group(function () {
     // Dashboard user
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Resource Laporan (INI PENTING!)
+    // Resource Laporan
     Route::resource('laporan', LaporanController::class);
     
     // Resource Relawan
@@ -54,5 +65,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Kelola Relawan
     Route::resource('relawan', AdminRelawanController::class);
+    Route::post('/relawan/bulk', [AdminRelawanController::class, 'bulkUpdate'])->name('relawan.bulk');
     Route::put('relawan/{id}/status', [AdminRelawanController::class, 'updateStatus'])->name('relawan.updateStatus');
 });

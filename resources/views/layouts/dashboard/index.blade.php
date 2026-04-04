@@ -12,6 +12,9 @@
             <div class="px-4 sm:px-6 lg:px-8 py-3">
                 <div class="flex justify-end items-center">
                     @include('partials.auth-dropdown', [
+                        'dashboardRoute' => route('dashboard'),
+                        'dashboardLabel' => 'Dashboard',
+                        'metaText' => Auth::user()->role === 'admin' ? 'Administrator' : 'Pengguna',
                         'profileRoute' => '#',
                         'profileLabel' => 'Profile',
                         'settingsRoute' => '#',
