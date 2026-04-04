@@ -1,9 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LaporanController;
-use App\Http\Controllers\RelawanController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Warga\LaporanController;
+use App\Http\Controllers\Warga\WargaController; // <-- Tambahkan ini!
 
 Route::get('/', function () {
     return view('home');
@@ -17,10 +16,22 @@ Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('laporan', LaporanController::class);
-    Route::resource('relawan', RelawanController::class);
-});
+// Opsi 1: Jika hanya menampilkan view biasa
+Route::get('/portal-warga', function () {
+    return view('portal.warga');
+})->name('warga.portal');
 
-require __DIR__.'/auth.php';
+// Tambahkan pengecekan apakah WargaController ada
+Route::get('/warga/dashboard', [WargaController::class, 'dashboard'])->name('warga.dashboard');
+Route::get('/warga/laporan', [WargaController::class, 'laporan'])->name('warga.laporan');
+Route::post('/warga/laporan/store', [WargaController::class, 'store'])->name('warga.laporan.store');
+
+Route::middleware(['auth'])->group(function () {
+    // Dashboard utama
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+    
+    // Resource Laporan
+    Route::resource('laporan', LaporanController::class);
+});
