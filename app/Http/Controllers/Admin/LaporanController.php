@@ -58,4 +58,16 @@ class LaporanController extends Controller
     {
         return redirect()->route('admin.dashboard');
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,diproses,selesai'
+        ]);
+
+        $laporan = Laporan::findOrFail($id);
+        $laporan->update(['status' => $request->status]);
+
+        return redirect()->back()->with('success', 'Status laporan berhasil diubah');
+    }
 }

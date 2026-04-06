@@ -41,6 +41,8 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #2563eb;
         }
+        
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 
@@ -67,16 +69,17 @@
                             <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center">3</span>
                         </div>
                         
-                        <!-- User Avatar -->
-                        <div class="flex items-center gap-3">
-                            <div class="text-right hidden sm:block">
-                                <p class="text-sm font-semibold text-gray-700">{{ Auth::user()->name }}</p>
-                                <p class="text-xs text-gray-500">Administrator</p>
-                            </div>
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-center text-white font-bold shadow-md">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                            </div>
-                        </div>
+                        @auth
+                            @include('partials.auth-dropdown', [
+                                'dashboardRoute' => route('admin.dashboard'),
+                                'dashboardLabel' => 'Dashboard Admin',
+                                'profileRoute' => route('profile.edit'),
+                                'profileLabel' => 'Profile Saya',
+                                'settingsRoute' => '#',
+                                'settingsLabel' => 'Pengaturan',
+                                'metaText' => 'Administrator'
+                            ])
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -118,6 +121,9 @@
         </main>
     </div>
 
+    <!-- Alpine.js untuk dropdown -->
+    <script src="//unpkg.com/alpinejs" defer></script>
+    
     <script>
         // Animasi fade-in
         const elements = document.querySelectorAll('.fade-in');

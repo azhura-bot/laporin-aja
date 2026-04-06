@@ -10,24 +10,10 @@
             <p class="text-sm text-gray-500">Platform Pengaduan</p>
         </div>
         
-        <!-- User Info -->
-        <div class="fixed top-4 right-4 z-50">
-    <div class="bg-blue-50 rounded-xl p-4 w-72 shadow">
-        <div class="flex items-center gap-3">
-            <div class="bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center">
-                <i class="fas fa-user text-white"></i>
-            </div>
-            <div class="flex-1">
-                <p class="font-semibold text-gray-800 text-sm">{{ Auth::user()->name }}</p>
-                <p class="text-xs text-gray-500">{{ Auth::user()->email }}</p>
-            </div>
-        </div>
-    </div>
-</div>
-        
         <!-- Navigation -->
-        <a href="{{ route('dashboard') }}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }} transition group">
+        <nav class="space-y-2">
+            <a href="{{ route('dashboard') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }} transition group">
                 <i class="fas fa-tachometer-alt w-5 {{ request()->routeIs('dashboard') ? 'text-white' : 'text-gray-400' }}"></i>
                 <span>Dashboard</span>
             </a>
@@ -49,16 +35,5 @@
                 <span>Gabung Relawan</span>
             </a>
         </nav>
-        
-        <!-- Logout -->
-        <div class="border-t mt-6 pt-6">
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition">
-                    <i class="fas fa-sign-out-alt w-5"></i>
-                    <span>Logout</span>
-                </button>
-            </form>
-        </div>
     </div>
 </aside>

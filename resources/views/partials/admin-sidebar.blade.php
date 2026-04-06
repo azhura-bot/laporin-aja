@@ -22,9 +22,7 @@
                class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('admin.laporan.*') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }} transition-all duration-200">
                 <i class="fas fa-file-alt w-5"></i>
                 <span>Semua Laporan</span>
-                @php
-                    $totalPending = \App\Models\Laporan::where('status', 'pending')->count();
-                @endphp
+                @php $totalPending = \App\Models\Laporan::where('status', 'pending')->count(); @endphp
                 @if($totalPending > 0)
                 <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">{{ $totalPending }}</span>
                 @endif
@@ -47,23 +45,9 @@
                 <i class="fas fa-reply-all w-5"></i>
                 <span>Balas Warga</span>
             </a>
-        </nav>
         
-        <!-- Divider -->
         <div class="border-t my-6"></div>
         
-        <!-- Bottom Menu -->
-        <nav class="space-y-1">
-            <form method="POST" action="{{ route('logout') }}" class="mt-2">
-                @csrf
-                <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all duration-200">
-                    <i class="fas fa-sign-out-alt w-5"></i>
-                    <span>Logout</span>
-                </button>
-            </form>
-        </nav>
-        
-        <!-- Version Info -->
         <div class="mt-8 pt-4 border-t text-center">
             <p class="text-xs text-gray-400">Admin Panel v1.0</p>
             <p class="text-xs text-gray-400">LaporinAja &copy; 2026</p>

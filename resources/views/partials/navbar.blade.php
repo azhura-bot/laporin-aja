@@ -44,32 +44,13 @@
 
             <!-- USER MENU FOR AUTHENTICATED USERS -->
             @auth
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-full transition duration-300">
-                        <i class="fas fa-user-circle text-lg"></i>
-                        <span class="hidden lg:block">{{ Auth::user()->name }}</span>
-                        <i class="fas fa-chevron-down text-sm" :class="{'rotate-180': open}"></i>
-                    </button>
-                    
-                    <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition">
-                            <i class="fas fa-tachometer-alt w-4"></i>
-                            Dashboard
-                        </a>
-                        <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition">
-                            <i class="fas fa-user-edit w-4"></i>
-                            Profile
-                        </a>
-                        <div class="border-t my-1"></div>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 transition">
-                                <i class="fas fa-sign-out-alt w-4"></i>
-                                Logout
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                @include('partials.auth-dropdown', [
+                    'dashboardRoute' => route('dashboard'),
+                    'dashboardLabel' => 'Dashboard',
+                    'profileRoute' => route('profile.edit'),
+                    'profileLabel' => 'Profile',
+                    'metaText' => Auth::user()->role === 'admin' ? 'Administrator' : 'Pengguna'
+                ])
             @endauth
         </div>
 

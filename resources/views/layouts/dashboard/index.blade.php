@@ -8,6 +8,19 @@
     <!-- Main Content -->
     <main class="flex-1 ml-72">
         <div class="p-8">
+            @auth
+                <div class="flex justify-end mb-6">
+                    @include('partials.auth-dropdown', [
+                        'dashboardRoute' => route('dashboard'),
+                        'dashboardLabel' => 'Dashboard',
+                        'profileRoute' => route('profile.edit'),
+                        'profileLabel' => 'Profile',
+                        'settingsRoute' => null,
+                        'metaText' => 'Pengguna'
+                    ])
+                </div>
+            @endauth
+
             @if(session('success'))
                 <div class="bg-green-100 border-l-4 border-green-500 text-green-700 px-4 py-3 rounded mb-6">
                     <i class="fas fa-check-circle mr-2"></i>

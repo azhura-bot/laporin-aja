@@ -9,9 +9,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { font-family: 'Poppins', sans-serif; }
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 <body>
     @yield('content')
+
+    <script src="//unpkg.com/alpinejs" defer></script>
 </body>
 </html>
