@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\RelawanController as AdminRelawanController;
 use App\Http\Controllers\Admin\AnalisisController;
 use App\Http\Controllers\Admin\KelolaStatusController;
 use App\Http\Controllers\Admin\BalasWargaController;
+use App\Http\Controllers\Admin\OperatorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,4 +68,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('relawan', AdminRelawanController::class);
     Route::post('/relawan/bulk', [AdminRelawanController::class, 'bulkUpdate'])->name('relawan.bulk');
     Route::put('relawan/{id}/status', [AdminRelawanController::class, 'updateStatus'])->name('relawan.updateStatus');
+    // Kelola Operator
+    Route::resource('operator', OperatorController::class);
+    Route::put('operator/{id}/status', [OperatorController::class, 'updateStatus'])->name('operator.updateStatus');
 });

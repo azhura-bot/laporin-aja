@@ -266,6 +266,13 @@
                     <span class="admin-sidebar-tooltip">Kelola Relawan</span>
                 </a>
             </nav>
+
+                <!-- Kelola Operator -->
+                <a href="{{ route('admin.operator.index') }}" 
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('admin.operator.*') ? 'sidebar-active' : 'text-gray-700 hover:bg-blue-50' }} transition-all duration-200">
+                    <i class="fas fa-hard-hat w-5"></i>
+                    <span>Kelola Operator</span>
+                    </a>
             
             <!-- Divider -->
             <div class="border-t my-6"></div>
