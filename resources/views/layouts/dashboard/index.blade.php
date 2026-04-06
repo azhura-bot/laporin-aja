@@ -2,30 +2,30 @@
 
 @section('content')
 <div class="flex min-h-screen bg-gray-100">
-    <!-- Sidebar -->
+    <!-- Include Sidebar Partial -->
     @include('partials.sidebar')
-
-    <!-- Main Content - akan mengikuti sidebar auto hide -->
-    <main class="flex-1 transition-all duration-300" id="mainContent">
-        <!-- Top Navbar -->
-        <div class="bg-white shadow-sm border-b sticky top-0 z-20">
-            <div class="px-4 sm:px-6 lg:px-8 py-3">
-                <div class="flex justify-end items-center">
+    
+    <!-- Mobile overlay -->
+    <div x-data="{ sidebarOpen: false }">
+        <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false" class="fixed inset-0 bg-black/50 z-30 md:hidden"></div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="flex-1 min-w-0">
+        <div class="p-8">
+            @auth
+                <div class="flex justify-end mb-6">
                     @include('partials.auth-dropdown', [
                         'dashboardRoute' => route('dashboard'),
                         'dashboardLabel' => 'Dashboard',
-                        'metaText' => Auth::user()->role === 'admin' ? 'Administrator' : 'Pengguna',
-                        'profileRoute' => '#',
+                        'profileRoute' => route('profile.edit'),
                         'profileLabel' => 'Profile',
-                        'settingsRoute' => '#',
-                        'settingsLabel' => 'Pengaturan'
+                        'settingsRoute' => null,
+                        'metaText' => 'Pengguna'
                     ])
                 </div>
-            </div>
-        </div>
+            @endauth
 
-        <!-- Page Content -->
-        <div class="p-4 sm:p-6 lg:p-8">
             @if(session('success'))
                 <div class="bg-green-100 border-l-4 border-green-500 text-green-700 px-4 py-3 rounded mb-6">
                     {{ session('success') }}
@@ -53,7 +53,7 @@
         margin-left: 280px;
     }
     
-    /* Transisi smooth */
+    /* Transisi smooth untuk main content */
     main {
         transition: margin-left 0.3s ease-in-out;
     }

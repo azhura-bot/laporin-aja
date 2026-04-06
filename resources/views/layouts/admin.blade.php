@@ -46,24 +46,24 @@
             background: #2563eb;
         }
         
-        [x-cloak] { 
-            display: none !important; 
+        [x-cloak] {
+            display: none !important;
         }
-        
+
         /* Main content margin akan mengikuti class dari sidebar admin */
         .admin-sidebar-collapsed ~ main {
             margin-left: 70px;
         }
-        
+
         .admin-sidebar-expanded ~ main {
             margin-left: 280px;
         }
-        
+
         /* Transisi smooth untuk main content */
         main {
             transition: margin-left 0.3s ease-in-out;
         }
-        
+
         /* Mobile responsive */
         @media (max-width: 768px) {
             .admin-sidebar-collapsed ~ main,
@@ -71,6 +71,7 @@
                 margin-left: 0 !important;
             }
         }
+
     </style>
     
     @stack('styles')
@@ -110,7 +111,7 @@
                                 <i class="fas fa-bell text-lg sm:text-xl"></i>
                             </button>
                             <span class="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full text-white text-[8px] sm:text-[10px] flex items-center justify-center">3</span>
-                            
+
                             <div x-show="open" @click.away="open = false" x-cloak 
                                  class="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-lg py-2 z-50 border">
                                 <div class="p-3 border-b">
@@ -126,6 +127,8 @@
 
                         @auth
                             @include('partials.auth-dropdown', [
+                                'dashboardRoute' => route('admin.dashboard'),
+                                'dashboardLabel' => 'Dashboard Admin',
                                 'profileRoute' => route('profile.edit'),
                                 'profileLabel' => 'Profile Saya',
                                 'settingsRoute' => '#',

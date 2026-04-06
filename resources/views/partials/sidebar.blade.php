@@ -216,7 +216,7 @@
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-        
+            
             <!-- Navigation -->
             <nav class="space-y-1">
                 <!-- Dashboard -->
