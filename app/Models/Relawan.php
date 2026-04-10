@@ -19,7 +19,8 @@ class Relawan extends Model
         'domisili',
         'keahlian',
         'motivasi',
-        'status'
+        'status',
+        'daerah_butuh_relawan_id'
     ];
 
     protected $casts = [
@@ -31,6 +32,11 @@ class Relawan extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function daerahButuhRelawan()
+    {
+        return $this->belongsTo(DaerahButuhRelawan::class);
     }
 
     public function getStatusTextAttribute()

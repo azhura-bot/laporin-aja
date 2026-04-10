@@ -96,6 +96,37 @@
                 </div>
                 @error('keahlian') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
             </div>
+
+            <!-- Daerah yang Dibutuhkan -->
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2 font-medium">Daerah yang Membutuhkan Relawan</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-map-marker-alt text-gray-400"></i>
+                    </div>
+                    <select name="daerah_butuh_relawan_id" class="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 appearance-none">
+                        <option value="">Pilih Daerah (Opsional)</option>
+                        @php
+                            $daerahOptions = \App\Models\DaerahButuhRelawan::aktif()->orderBy('provinsi')->orderBy('nama_daerah')->get();
+                        @endphp
+                        @foreach($daerahOptions as $daerah)
+                            <option value="{{ $daerah->id }}" {{ old('daerah_butuh_relawan_id') == $daerah->id ? 'selected' : '' }}>
+                                {{ $daerah->nama_daerah }}, {{ $daerah->provinsi }}
+                                @if($daerah->relawan_tersedia > 0)
+                                    (Butuh {{ $daerah->relawan_tersedia }} relawan)
+                                @else
+                                    (Kuota penuh)
+                                @endif
+                            </option>
+                        @endforeach
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Pilih daerah yang ingin Anda bantu. Kosongkan jika belum memutuskan.</p>
+                @error('daerah_butuh_relawan_id') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+            </div>
         </div>
 
         <!-- Motivasi -->

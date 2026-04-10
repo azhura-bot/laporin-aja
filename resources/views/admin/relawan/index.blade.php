@@ -56,6 +56,64 @@
         </div>
     </div>
 
+    <!-- Info Bencana Preview -->
+    <div class="bg-slate-50 rounded-3xl shadow-lg p-6 mb-6 border border-slate-200">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            <div>
+                <h3 class="text-xl font-semibold text-gray-800">Ringkasan Info Bencana</h3>
+                <p class="text-gray-500 mt-2">Statistik relawan yang juga ditampilkan di halaman publik Info Bencana.</p>
+            </div>
+            <a href="{{ route('home') }}#informasi" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-full transition">
+                <i class="fas fa-globe-americas"></i>
+                Lihat Halaman Publik
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            @include('components.relawan-summary-card', [
+                'title' => 'Total Relawan',
+                'value' => $totalRelawan,
+                'description' => 'Jumlah relawan terdaftar pada sistem.',
+                'icon' => 'fas fa-users',
+                'iconBgClass' => 'bg-blue-100',
+                'iconTextClass' => 'text-blue-600',
+                'valueTextClass' => 'text-blue-600',
+                'footerText' => 'Data terintegrasi dengan modul admin kelola relawan.'
+            ])
+            @include('components.relawan-summary-card', [
+                'title' => 'Relawan Aktif',
+                'value' => $totalAktif,
+                'description' => 'Relawan aktif yang siap bertugas.',
+                'icon' => 'fas fa-hands-helping',
+                'iconBgClass' => 'bg-green-100',
+                'iconTextClass' => 'text-green-600',
+                'valueTextClass' => 'text-green-600',
+                'footerText' => 'Jumlah relawan aktif yang bisa dihubungi saat darurat.'
+            ])
+            @include('components.relawan-summary-card', [
+                'title' => 'Menunggu Verifikasi',
+                'value' => $totalPending,
+                'description' => 'Relawan baru yang masih dalam proses verifikasi.',
+                'icon' => 'fas fa-clock',
+                'iconBgClass' => 'bg-yellow-100',
+                'iconTextClass' => 'text-yellow-600',
+                'valueTextClass' => 'text-yellow-600',
+                'footerText' => 'Status ini berasal langsung dari data admin kelola relawan.'
+            ])
+        </div>
+
+        <div>
+            <h4 class="text-sm font-semibold text-slate-500 uppercase mb-3">Keahlian Relawan Aktif</h4>
+            <div class="flex flex-wrap gap-3">
+                @forelse($activeSkills as $skill)
+                    <span class="px-4 py-2 rounded-full bg-blue-50 text-blue-600 border border-blue-100 text-sm">{{ $skill }}</span>
+                @empty
+                    <span class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 text-sm">Tidak ada keahlian relawan aktif terdaftar.</span>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
     <!-- Filter Section -->
     <div class="bg-white rounded-xl shadow-md p-4 mb-6">
         <form method="GET" action="{{ route('admin.relawan.index') }}" class="flex flex-wrap gap-3 items-end">
@@ -128,6 +186,7 @@
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Kontak</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Domisili</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Keahlian</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Daerah</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Tanggal Daftar</th>
                         <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase">Aksi</th>
@@ -160,6 +219,16 @@
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
                                 {{ $relawan->keahlian }}
                             </span>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-600">
+                            @if($relawan->daerahButuhRelawan)
+                                <div class="text-xs">
+                                    <div class="font-medium text-gray-800">{{ $relawan->daerahButuhRelawan->nama_daerah }}</div>
+                                    <div class="text-gray-500">{{ $relawan->daerahButuhRelawan->provinsi }}</div>
+                                </div>
+                            @else
+                                <span class="text-gray-400 text-xs">Belum pilih</span>
+                            @endif
                         </td>
                         <td class="px-4 py-3">
                             @if($relawan->status == 'pending')
@@ -202,7 +271,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="9" class="px-4 py-8 text-center text-gray-500">
+                        <td colspan="10" class="px-4 py-8 text-center text-gray-500">
                             <i class="fas fa-users text-4xl text-gray-300 mb-2 block"></i>
                             Belum ada data relawan
                         </td>

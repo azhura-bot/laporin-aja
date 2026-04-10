@@ -48,5 +48,8 @@ class DatabaseSeeder extends Seeder
             'no_hp' => '081255512345',
             'role' => 'user',
         ]);
+
+        // Seed daerah yang membutuhkan relawan
+        $this->call(DaerahButuhRelawanSeeder::class);
     }
 }

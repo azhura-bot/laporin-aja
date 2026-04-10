@@ -18,8 +18,8 @@
                 Layanan
                 <span class="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
             </a></li>
-            <li><a href="#kontak" class="relative text-gray-700 hover:text-blue-600 transition duration-300 group font-medium">
-                Kontak
+            <li><a href="#informasi" class="relative text-gray-700 hover:text-blue-600 transition duration-300 group font-medium">
+                Informasi
                 <span class="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
             </a></li>
         </ul>

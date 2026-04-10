@@ -10,7 +10,9 @@ use App\Http\Controllers\Admin\RelawanController as AdminRelawanController;
 use App\Http\Controllers\Admin\AnalisisController;
 use App\Http\Controllers\Admin\KelolaStatusController;
 use App\Http\Controllers\Admin\BalasWargaController;
-use App\Http\Controllers\Admin\OperatorController;
+use App\Http\Controllers\Admin\DaerahButuhRelawanController;
+use App\Models\DaerahButuhRelawan;
+use App\Models\Relawan;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +22,13 @@ use App\Http\Controllers\Admin\OperatorController;
 
 // Route untuk halaman public
 Route::get('/', function () {
-    return view('home');
+    $totalRelawan = Relawan::count();
+    $relawanAktif = Relawan::where('status', 'aktif')->count();
+    $relawanPending = Relawan::where('status', 'pending')->count();
+    $activeSkills = Relawan::where('status', 'aktif')->select('keahlian')->distinct()->pluck('keahlian');
+    $daerahButuhRelawan = DaerahButuhRelawan::aktif()->orderBy('prioritas', 'desc')->take(6)->get();
+
+    return view('home', compact('totalRelawan', 'relawanAktif', 'relawanPending', 'activeSkills', 'daerahButuhRelawan'));
 })->name('home');
 
 // Route untuk halaman portal warga (tanpa auth)
@@ -71,4 +79,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Kelola Operator
     Route::resource('operator', OperatorController::class);
     Route::put('operator/{id}/status', [OperatorController::class, 'updateStatus'])->name('operator.updateStatus');
+    
+    // Kelola Daerah Butuh Relawan
+    Route::resource('daerah-butuh-relawan', DaerahButuhRelawanController::class);
+    Route::put('daerah-butuh-relawan/{id}/toggle', [DaerahButuhRelawanController::class, 'toggleStatus'])->name('daerah-butuh-relawan.toggle');
 });
