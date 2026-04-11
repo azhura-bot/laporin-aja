@@ -138,12 +138,11 @@
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Lokasi</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tanggal</th>
-                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100" id="laporanTableBody">
                     @foreach($laporan as $item)
-                    <tr class="hover:bg-gray-50 transition laporan-row" 
+                    <tr onclick="window.location='{{ route('admin.laporan.show', $item->id) }}'" class="hover:bg-gray-50 transition laporan-row cursor-pointer" 
                         data-id="{{ $item->id }}"
                         data-status="{{ $item->status }}"
                         data-kategori="{{ $item->kategori }}"
@@ -171,7 +170,7 @@
                             <form method="POST" action="{{ route('admin.kelola-status.update', $item->id) }}" class="inline status-form">
                                 @csrf
                                 @method('PUT')
-                                <select name="status" onchange="confirmStatusChange(this)"
+                                <select name="status" onclick="event.stopPropagation()" onchange="confirmStatusChange(this)"
                                         class="text-xs px-3 py-1.5 rounded-full border-0 font-medium cursor-pointer transition-all
                                         {{ $item->status == 'pending' ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200' : 
                                            ($item->status == 'diproses' ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' : 
@@ -185,18 +184,6 @@
                         <td class="px-6 py-4 text-sm text-gray-500">
                             <i class="far fa-calendar-alt text-gray-400 mr-1"></i>
                             {{ $item->created_at->format('d/m/Y') }}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <div class="flex items-center justify-center gap-2">
-                                <a href="{{ route('admin.laporan.show', $item->id) }}"
-                                   class="text-blue-500 hover:text-blue-700 transition p-1" title="Detail">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <button onclick="quickUpdateStatus({{ $item->id }}, '{{ $item->status }}')"
-                                        class="text-purple-500 hover:text-purple-700 transition p-1" title="Update Cepat">
-                                    <i class="fas fa-bolt"></i>
-                                </button>
-                            </div>
                         </td>
                     </tr>
                     @endforeach

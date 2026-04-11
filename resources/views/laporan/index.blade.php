@@ -33,11 +33,11 @@
     @else
         <div class="grid gap-4">
             @foreach($laporans as $laporan)
-            <div class="bg-white rounded-lg shadow p-4 hover:shadow-md transition">
+            <a href="{{ route('laporan.show', $laporan->id) }}" class="group block bg-white rounded-lg shadow p-4 hover:shadow-md transition hover:-translate-y-0.5">
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
                         <div class="flex items-center gap-3 mb-2">
-                            <h3 class="text-lg font-semibold text-gray-800">
+                            <h3 class="text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
                                 {{ $laporan->judul_laporan }}
                             </h3>
                             {!! $laporan->status_badge !!}
@@ -49,30 +49,11 @@
                             <i class="fas fa-calendar mr-1"></i> {{ $laporan->tanggal_kejadian->format('d/m/Y') }}
                         </p>
                     </div>
-                    <div class="flex gap-2">
-                        <a href="{{ route('laporan.show', $laporan->id) }}" 
-                           class="text-blue-600 hover:text-blue-800">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        @if($laporan->status == 'pending')
-                        <a href="{{ route('laporan.edit', $laporan->id) }}" 
-                           class="text-yellow-600 hover:text-yellow-800">
-                            <i class="fas fa-edit"></i>
-                        </a>    
-                        <form action="{{ route('laporan.destroy', $laporan->id) }}" 
-                              method="POST" 
-                              class="inline"
-                              onsubmit="return confirm('Yakin ingin menghapus laporan ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:text-red-800">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
-                        @endif
-                    </div>
+                    <span class="text-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-300 flex-shrink-0">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
                 </div>
-            </div>
+            </a>
             @endforeach
         </div>
         

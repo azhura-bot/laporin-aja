@@ -10,7 +10,7 @@ class RelawanController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Relawan::with('user');
+        $query = Relawan::with(['user', 'daerahButuhRelawan']);
         
         // Filter status
         if ($request->status && $request->status != 'semua') {
@@ -42,13 +42,14 @@ class RelawanController extends Controller
         
         // Daftar keahlian untuk filter
         $keahlianList = Relawan::select('keahlian')->distinct()->pluck('keahlian');
+        $activeSkills = Relawan::where('status', 'aktif')->select('keahlian')->distinct()->pluck('keahlian');
         
-        return view('admin.relawan.index', compact('relawans', 'totalRelawan', 'totalPending', 'totalAktif', 'totalNonaktif', 'keahlianList'));
+        return view('admin.relawan.index', compact('relawans', 'totalRelawan', 'totalPending', 'totalAktif', 'totalNonaktif', 'keahlianList', 'activeSkills'));
     }
 
     public function show($id)
     {
-        $relawan = Relawan::with('user')->findOrFail($id);
+        $relawan = Relawan::with(['user', 'daerahButuhRelawan'])->findOrFail($id);
         return view('admin.relawan.show', compact('relawan'));
     }
 

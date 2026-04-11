@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Laporan extends Model
 {
     use HasFactory;
+
+    protected $table = 'laporans';
 
     protected $fillable = [
         'nama_pelapor',
@@ -24,24 +26,52 @@ class Laporan extends Model
     ];
 
     protected $casts = [
-        'tanggal_kejadian' => 'datetime',
+        'tanggal_kejadian' => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
-    // Accessor untuk mendapatkan URL lengkap lampiran
+    // Relasi ke User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Relasi ke Tanggapan (ONE TO MANY)
+    public function tanggapans()
+    {
+        return $this->hasMany(Tanggapan::class, 'laporan_id');
+    }
+
+    // Alias untuk tanggapans (agar bisa dipanggil dengan tanggapan)
+    public function tanggapan()
+    {
+        return $this->hasMany(Tanggapan::class, 'laporan_id');
+    }
+
+    // Accessor untuk status badge
+    public function getStatusBadgeAttribute()
+    {
+        $badges = [
+            'pending' => 'bg-yellow-100 text-yellow-800',
+            'diproses' => 'bg-blue-100 text-blue-800',
+            'selesai' => 'bg-green-100 text-green-800'
+        ];
+
+        $color = $badges[$this->status] ?? 'bg-gray-100 text-gray-800';
+        $text = [
+            'pending' => 'Menunggu',
+            'diproses' => 'Diproses',
+            'selesai' => 'Selesai'
+        ][$this->status] ?? 'Tidak Diketahui';
+        
+        return "<span class='px-2 py-1 rounded-full text-xs font-semibold {$color}'>{$text}</span>";
+    }
+
+    // Accessor untuk lampiran URL
     public function getLampiranUrlAttribute()
     {
         if ($this->lampiran) {
-            // Cek apakah sudah ada storage path
-            if (str_starts_with($this->lampiran, 'storage/')) {
-                return asset($this->lampiran);
-            }
-            // Jika hanya nama file
-            if (file_exists(public_path('storage/lampiran/' . $this->lampiran))) {
-                return asset('storage/lampiran/' . $this->lampiran);
-            }
-            // Default storage path
             return asset('storage/' . $this->lampiran);
         }
         return null;
@@ -57,8 +87,4 @@ class Laporan extends Model
         
         return in_array($extension, $extensions);
     }
-    public function tanggapan()
-{
-    return $this->hasMany(Tanggapan::class);
-}
 }

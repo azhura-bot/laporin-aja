@@ -143,7 +143,7 @@
                 @elseif(isset($laporanTerbaru))
                     <div class="space-y-3">
                         @foreach($laporanTerbaru as $laporan)
-                        <div class="group bg-gray-50 hover:bg-white rounded-lg p-3 md:p-4 transition-all duration-300 hover:shadow-md border border-transparent hover:border-blue-100">
+                        <a href="{{ route('laporan.show', $laporan->id) }}" class="group block bg-gray-50 hover:bg-white rounded-lg p-3 md:p-4 transition-all duration-300 hover:shadow-md border border-transparent hover:border-blue-100">
                             <div class="flex justify-between items-start">
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-2 md:gap-3 mb-1 md:mb-2 flex-wrap">
@@ -175,12 +175,11 @@
                                         </span>
                                     </div>
                                 </div>
-                                <a href="{{ route('laporan.show', $laporan->id) }}" 
-                                   class="text-blue-600 hover:text-blue-800 opacity-0 group-hover:opacity-100 transition-all duration-300 ml-2 md:ml-4 flex-shrink-0">
+                                <span class="text-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-300 ml-2 md:ml-4 flex-shrink-0">
                                     <i class="fas fa-chevron-right"></i>
-                                </a>
+                                </span>
                             </div>
-                        </div>
+                        </a>
                         @endforeach
                     </div>
                 @else

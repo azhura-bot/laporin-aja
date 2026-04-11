@@ -7,6 +7,7 @@ use App\Models\Laporan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log; // Tambahkan untuk debugging
 
 class LaporanController extends Controller
 {
@@ -47,6 +48,11 @@ class LaporanController extends Controller
      */
     public function store(Request $request)
     {
+        // Cek apakah user login
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
+        }
+
         $validated = $request->validate([
             'nama_pelapor' => 'required|string|max:255',
             'no_hp' => 'required|string|max:15',
@@ -63,27 +69,34 @@ class LaporanController extends Controller
         $lampiranPath = null;
         if ($request->hasFile('lampiran')) {
             $file = $request->file('lampiran');
-            $fileName = time() . '_' . $file->getClientOriginalName();
+            $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
             $lampiranPath = $file->storeAs('lampiran', $fileName, 'public');
         }
 
         // Simpan ke database
-        Laporan::create([
-            'nama_pelapor' => $validated['nama_pelapor'],
-            'no_hp' => $validated['no_hp'],
-            'email' => $validated['email'],
-            'kategori' => $validated['kategori'],
-            'lokasi' => $validated['lokasi'],
-            'tanggal_kejadian' => $validated['tanggal_kejadian'],
-            'judul_laporan' => $validated['judul_laporan'],
-            'deskripsi' => $validated['deskripsi'],
-            'lampiran' => $lampiranPath,
-            'user_id' => Auth::id(),
-            'status' => 'pending'
-        ]);
+        try {
+            $laporan = Laporan::create([
+                'nama_pelapor' => $validated['nama_pelapor'],
+                'no_hp' => $validated['no_hp'],
+                'email' => $validated['email'],
+                'kategori' => $validated['kategori'],
+                'lokasi' => $validated['lokasi'],
+                'tanggal_kejadian' => $validated['tanggal_kejadian'],
+                'judul_laporan' => $validated['judul_laporan'],
+                'deskripsi' => $validated['deskripsi'],
+                'lampiran' => $lampiranPath,
+                'user_id' => Auth::id(),
+                'status' => 'pending'
+            ]);
 
-        return redirect()->route('laporan.index')
-                         ->with('success', 'Laporan berhasil dikirim!');
+            return redirect()->route('laporan.index')
+                             ->with('success', 'Laporan berhasil dikirim!');
+        } catch (\Exception $e) {
+            Log::error('Error saving report: ' . $e->getMessage());
+            return redirect()->back()
+                             ->withInput()
+                             ->with('error', 'Terjadi kesalahan saat menyimpan laporan: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -152,7 +165,7 @@ class LaporanController extends Controller
             }
             
             $file = $request->file('lampiran');
-            $fileName = time() . '_' . $file->getClientOriginalName();
+            $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
             $lampiranPath = $file->storeAs('lampiran', $fileName, 'public');
             $validated['lampiran'] = $lampiranPath;
         }

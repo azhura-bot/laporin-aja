@@ -1,7 +1,7 @@
-<footer class="bg-gradient-to-r from-blue-600 to-blue-700 text-white pt-12 pb-6 fade-in">
+<footer class="bg-gradient-to-r from-blue-600 to-blue-700 text-white pt-2 pb-6 fade-in">
     <div class="container mx-auto px-6 md:px-24">
         <!-- Main Footer -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-5">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-2">
             <!-- Brand -->
             <div>
                 <div class="flex items-center gap-2 mb-4">

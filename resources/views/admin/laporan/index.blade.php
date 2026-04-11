@@ -70,12 +70,11 @@
                             <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Lokasi</th>
                             <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                             <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
-                            <th class="px-4 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider w-28">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200" id="laporanTableBody">
                         @foreach($laporan as $item)
-                        <tr class="hover:bg-gray-50 transition duration-200 laporan-row" 
+                        <tr onclick="window.location='{{ route('admin.laporan.show', $item->id) }}'" class="hover:bg-gray-50 transition duration-200 laporan-row cursor-pointer" 
                             data-status="{{ $item->status }}"
                             data-kategori="{{ $item->kategori }}"
                             data-judul="{{ strtolower($item->judul_laporan) }}"
@@ -121,7 +120,7 @@
                                 @endphp
                                 
                                 @if($item->lampiran && $fileExists && $isImage)
-                                    <button onclick="showImageModal('{{ $imageUrl }}', '{{ addslashes($item->judul_laporan) }}')" 
+                                    <button onclick="event.stopPropagation(); showImageModal('{{ $imageUrl }}', '{{ addslashes($item->judul_laporan) }}')" 
                                             class="group relative block">
                                         <img src="{{ $imageUrl }}" 
                                              alt="Lampiran" 
@@ -132,7 +131,7 @@
                                         </div>
                                     </button>
                                 @elseif($item->lampiran && $fileExists && !$isImage)
-                                    <a href="{{ $imageUrl }}" target="_blank" 
+                                    <a href="{{ $imageUrl }}" target="_blank" onclick="event.stopPropagation()" 
                                        class="flex flex-col items-center gap-1 text-blue-600 hover:text-blue-800">
                                         @php
                                             $ext = strtolower(pathinfo($item->lampiran, PATHINFO_EXTENSION));
@@ -209,27 +208,6 @@
                             <td class="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
                                 <i class="far fa-calendar-alt mr-1"></i>
                                 {{ $item->created_at->format('d/m/Y') }}
-                            </td>
-                            
-                            <td class="px-4 py-4">
-                                <div class="flex items-center justify-center gap-2">
-                                    <a href="{{ route('admin.laporan.show', $item->id) }}" 
-                                       class="text-blue-600 hover:text-blue-800 transition p-1" title="Detail">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <button onclick="changeStatus({{ $item->id }}, '{{ $item->status }}')" 
-                                            class="text-green-600 hover:text-green-800 transition p-1" title="Ubah Status">
-                                        <i class="fas fa-tasks"></i>
-                                    </button>
-                                    <form action="{{ route('admin.laporan.destroy', $item->id) }}" method="POST" class="inline" 
-                                          onsubmit="return confirm('Yakin ingin menghapus laporan ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-800 transition p-1" title="Hapus">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
                             </td>
                         </tr>
                         @endforeach

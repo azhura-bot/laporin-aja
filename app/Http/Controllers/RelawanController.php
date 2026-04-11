@@ -49,6 +49,7 @@ class RelawanController extends Controller
             'domisili' => $validated['domisili'],
             'keahlian' => $validated['keahlian'],
             'motivasi' => $validated['motivasi'] ?? null,
+            'daerah_butuh_relawan_id' => $validated['daerah_butuh_relawan_id'] ?? null,
             'status' => 'pending'
         ]);
 

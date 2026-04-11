@@ -26,6 +26,18 @@
                 </p>
             </div>
             <div>
+                <p class="text-xs text-gray-500">Daerah yang Dipilih</p>
+                <p class="font-medium text-gray-800">
+                    @if($relawan->daerahButuhRelawan)
+                        <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                            {{ $relawan->daerahButuhRelawan->nama_daerah }}, {{ $relawan->daerahButuhRelawan->provinsi }}
+                        </span>
+                    @else
+                        <span class="text-gray-500 text-sm">Belum memilih daerah</span>
+                    @endif
+                </p>
+            </div>
+            <div>
                 <p class="text-xs text-gray-500">Status</p>
                 <p>{!! $relawan->status_badge !!}</p>
             </div>

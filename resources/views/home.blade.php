@@ -182,6 +182,150 @@
     </div>
 </section>
 
+<!-- ========== INFO BENCANA SECTION ========== -->
+<section id="informasi" class="py-20 bg-slate-50 fade-in">
+    <div class="container mx-auto px-8 md:px-32">
+        <div class="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] items-start">
+            <div class="bg-gradient-to-br from-white via-slate-100 to-slate-50 rounded-3xl shadow-2xl border border-slate-200 p-10">
+                <span class="inline-flex items-center gap-2 text-blue-600 font-semibold uppercase text-xs tracking-[0.2em] mb-4">
+                    <i class="fas fa-info-circle"></i>
+                    Info Bencana
+                </span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-5">
+                    Siap Tanggap dengan Relawan <span class="text-orange-500">Profesional</span>
+                </h2>
+                <p class="text-gray-600 leading-relaxed mb-6 max-w-2xl">
+                    Data relawan aktif kami membantu masyarakat saat bencana. Info ini terintegrasi langsung dengan panel admin <strong>Kelola Relawan</strong>.
+                </p>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3">
+                        <span class="mt-1 text-blue-600"><i class="fas fa-check-circle"></i></span>
+                        <p class="text-gray-700">Relawan aktif siap membantu mitigasi dan evakuasi.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="mt-1 text-blue-600"><i class="fas fa-check-circle"></i></span>
+                        <p class="text-gray-700">Informasi relawan diperbarui melalui dashboard admin.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="mt-1 text-blue-600"><i class="fas fa-check-circle"></i></span>
+                        <p class="text-gray-700">Hanya <span class="font-semibold text-blue-600">Gabung Relawan</span> yang disorot sebagai ajakan utama.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="mt-1 text-blue-600"><i class="fas fa-map-marker-alt"></i></span>
+                        <p class="text-gray-700">Daftar daerah yang membutuhkan relawan tersedia di bawah.</p>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <a href="@auth{{ route('dashboard') }}@else{{ route('register') }}@endauth" class="inline-flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-semibold transition">
+                        <i class="fas fa-hands-helping"></i>
+                        Gabung Relawan
+                    </a>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Statistik Relawan -->
+                <div class="grid grid-cols-1 gap-4">
+                    @include('components.relawan-summary-card', [
+                        'title' => 'Total Relawan',
+                        'value' => $totalRelawan,
+                        'description' => 'Semua relawan terdaftar di sistem.',
+                        'icon' => 'fas fa-users',
+                        'iconBgClass' => 'bg-blue-100',
+                        'iconTextClass' => 'text-blue-600',
+                        'valueTextClass' => 'text-blue-600'
+                    ])
+                    @include('components.relawan-summary-card', [
+                        'title' => 'Relawan Aktif',
+                        'value' => $relawanAktif,
+                        'description' => 'Sudah diverifikasi dan siap diterjunkan.',
+                        'icon' => 'fas fa-check-circle',
+                        'iconBgClass' => 'bg-green-100',
+                        'iconTextClass' => 'text-green-600',
+                        'valueTextClass' => 'text-green-600'
+                    ])
+                    @include('components.relawan-summary-card', [
+                        'title' => 'Menunggu Verifikasi',
+                        'value' => $relawanPending,
+                        'description' => 'Relawan baru yang sedang divalidasi admin.',
+                        'icon' => 'fas fa-clock',
+                        'iconBgClass' => 'bg-yellow-100',
+                        'iconTextClass' => 'text-yellow-600',
+                        'valueTextClass' => 'text-yellow-600'
+                    ])
+                </div>
+
+                <!-- Daerah Butuh Relawan Teratas -->
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-exclamation-triangle text-red-500"></i>
+                        <h3 class="text-lg font-semibold text-gray-800">Prioritas Tinggi</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Daerah yang paling membutuhkan relawan saat ini:</p>
+
+                    <div class="space-y-3">
+                        @forelse($daerahButuhRelawan->where('aktif', true)->sortByDesc('prioritas')->take(3) as $daerah)
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-medium text-gray-800 text-sm">{{ $daerah->nama_daerah }}</span>
+                                        <span class="px-2 py-0.5 {{ $daerah->prioritas_badge }} text-xs rounded-full font-medium">
+                                            {{ $daerah->prioritas_text }}
+                                        </span>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1">{{ $daerah->provinsi }}</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm font-bold text-orange-600">{{ $daerah->relawan_tersedia }}</div>
+                                    <div class="text-xs text-gray-500">butuh</div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-4">
+                                <i class="fas fa-check-circle text-green-500 text-2xl mb-2"></i>
+                                <p class="text-sm text-gray-600">Semua daerah sudah terpenuhi relawannya</p>
+                            </div>
+                        @endforelse
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <a href="#daerah-relawan" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium transition">
+                            <i class="fas fa-arrow-down"></i>
+                            Lihat Semua Daerah
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== DAERAH BUTUH RELAWAN SECTION ========== -->
+<section id="daerah-relawan" class="py-20 bg-white fade-in">
+    <div class="container mx-auto px-8 md:px-32">
+        <div class="text-center mb-14">
+            <span class="text-red-500 font-semibold text-sm uppercase tracking-wide">Daerah Membutuhkan Relawan</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">
+                Bergabunglah di <span class="text-blue-600">Daerah Terdekat</span>
+            </h2>
+            <div class="w-20 h-1 bg-gradient-to-r from-blue-500 to-red-500 mx-auto mt-4 rounded-full"></div>
+            <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Temukan daerah yang membutuhkan bantuan relawan Anda. Pilih lokasi terdekat atau sesuai dengan keahlian Anda.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+            @forelse($daerahButuhRelawan as $daerah)
+                @include('components.daerah-relawan-card', ['daerah' => $daerah, 'showCta' => true])
+            @empty
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-map-marked-alt text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Belum ada daerah yang membutuhkan relawan</h3>
+                    <p class="text-gray-500">Data daerah akan segera diperbarui oleh admin.</p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
+
 <!-- ========== CARA MENGAJUAN PENGADUAN ========== -->
 <section class="py-20 px-8 md:px-32 bg-gradient-to-br from-gray-50 to-white fade-in">
     <div class="container mx-auto">

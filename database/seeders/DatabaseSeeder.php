@@ -14,5 +14,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserRoleSeeder::class,
         ]);
+
+        // Seed daerah yang membutuhkan relawan
+        $this->call(DaerahButuhRelawanSeeder::class);
     }
 }

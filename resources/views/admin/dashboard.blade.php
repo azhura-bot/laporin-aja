@@ -159,12 +159,11 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kategori</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @foreach($laporanTerbaru as $laporan)
-                    <tr class="hover:bg-gray-50 transition">
+                    <tr onclick="window.location='{{ route('admin.laporan.show', $laporan->id) }}'" class="hover:bg-gray-50 transition cursor-pointer">
                         <td class="px-6 py-4 text-sm text-gray-900">#{{ $laporan->id }}</td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ Str::limit($laporan->judul_laporan, 40) }}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $laporan->nama_pelapor }}</td>
@@ -179,11 +178,6 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $laporan->created_at->format('d/m/Y') }}</td>
-                        <td class="px-6 py-4">
-                            <a href="{{ route('admin.laporan.show', $laporan->id) }}" class="text-blue-600 hover:text-blue-800">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                        </td>
                     </tr>
                     @endforeach
                 </tbody>
