@@ -154,6 +154,7 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Gambar</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Judul Laporan</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pelapor</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kategori</th>
@@ -165,6 +166,17 @@
                     @foreach($laporanTerbaru as $laporan)
                     <tr onclick="window.location='{{ route('admin.laporan.show', $laporan->id) }}'" class="hover:bg-gray-50 transition cursor-pointer">
                         <td class="px-6 py-4 text-sm text-gray-900">#{{ $laporan->id }}</td>
+                        <td class="px-6 py-4">
+                            @if($laporan->lampiran)
+                                <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                                    <img src="{{ asset('storage/' . $laporan->lampiran) }}" alt="Laporan" class="w-full h-full object-cover">
+                                </div>
+                            @else
+                                <div class="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center">
+                                    <i class="fas fa-image text-gray-400 text-sm"></i>
+                                </div>
+                            @endif
+                        </td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ Str::limit($laporan->judul_laporan, 40) }}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $laporan->nama_pelapor }}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $laporan->kategori }}</td>
@@ -182,6 +194,50 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="border-t px-6 py-4 bg-gray-50 flex justify-between items-center">
+            <div class="text-sm text-gray-600">
+                Menampilkan <span class="font-medium">{{ $laporanTerbaru->perPage() * ($laporanTerbaru->currentPage() - 1) + 1 }}</span> 
+                sampai <span class="font-medium">{{ min($laporanTerbaru->perPage() * $laporanTerbaru->currentPage(), $laporanTerbaru->total()) }}</span>
+                dari <span class="font-medium">{{ $laporanTerbaru->total() }}</span> laporan
+            </div>
+            
+            <div class="flex gap-2">
+                {{-- Previous Page --}}
+                @if ($laporanTerbaru->onFirstPage())
+                    <span class="px-3 py-2 border border-gray-300 rounded-lg text-gray-400 cursor-not-allowed text-sm">
+                        <i class="fas fa-chevron-left mr-1"></i> Sebelumnya
+                    </span>
+                @else
+                    <a href="{{ $laporanTerbaru->previousPageUrl() }}" class="px-3 py-2 border border-blue-500 text-blue-600 hover:bg-blue-50 rounded-lg transition text-sm">
+                        <i class="fas fa-chevron-left mr-1"></i> Sebelumnya
+                    </a>
+                @endif
+                
+                {{-- Page Numbers --}}
+                <div class="flex gap-1">
+                    @foreach ($laporanTerbaru->getUrlRange(1, $laporanTerbaru->lastPage()) as $page => $url)
+                        @if ($page == $laporanTerbaru->currentPage())
+                            <span class="px-3 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}" class="px-3 py-2 border border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 rounded-lg transition text-sm">{{ $page }}</a>
+                        @endif
+                    @endforeach
+                </div>
+                
+                {{-- Next Page --}}
+                @if ($laporanTerbaru->hasMorePages())
+                    <a href="{{ $laporanTerbaru->nextPageUrl() }}" class="px-3 py-2 border border-blue-500 text-blue-600 hover:bg-blue-50 rounded-lg transition text-sm">
+                        Berikutnya <i class="fas fa-chevron-right ml-1"></i>
+                    </a>
+                @else
+                    <span class="px-3 py-2 border border-gray-300 rounded-lg text-gray-400 cursor-not-allowed text-sm">
+                        Berikutnya <i class="fas fa-chevron-right ml-1"></i>
+                    </span>
+                @endif
+            </div>
         </div>
     </div>
 </div>

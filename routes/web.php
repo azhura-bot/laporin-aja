@@ -26,7 +26,9 @@ Route::get('/', function () {
     $relawanAktif = Relawan::where('status', 'aktif')->count();
     $relawanPending = Relawan::where('status', 'pending')->count();
     $activeSkills = Relawan::where('status', 'aktif')->select('keahlian')->distinct()->pluck('keahlian');
-    $daerahButuhRelawan = DaerahButuhRelawan::aktif()->orderBy('prioritas', 'desc')->take(6)->get();
+    $daerahButuhRelawan = DaerahButuhRelawan::aktif()
+        ->orderByRaw("FIELD(prioritas, 'kritis', 'tinggi', 'sedang', 'rendah')")
+        ->paginate(6);
 
     return view('home', compact('totalRelawan', 'relawanAktif', 'relawanPending', 'activeSkills', 'daerahButuhRelawan'));
 })->name('home');

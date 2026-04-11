@@ -323,6 +323,44 @@
                 </div>
             @endforelse
         </div>
+
+        <!-- Pagination -->
+        <div class="mt-12 flex justify-center">
+            <div class="flex gap-2 items-center">
+                {{-- Previous Page Link --}}
+                @if ($daerahButuhRelawan->onFirstPage())
+                    <span class="px-4 py-2 border border-gray-300 rounded-lg text-gray-400 cursor-not-allowed">
+                        <i class="fas fa-chevron-left mr-2"></i> Sebelumnya
+                    </span>
+                @else
+                    <a href="{{ $daerahButuhRelawan->previousPageUrl() }}" class="px-4 py-2 border border-blue-500 text-blue-600 hover:bg-blue-50 rounded-lg transition">
+                        <i class="fas fa-chevron-left mr-2"></i> Sebelumnya
+                    </a>
+                @endif
+
+                {{-- Page Links --}}
+                <div class="flex gap-1">
+                    @foreach ($daerahButuhRelawan->getUrlRange(1, $daerahButuhRelawan->lastPage()) as $page => $url)
+                        @if ($page == $daerahButuhRelawan->currentPage())
+                            <span class="px-3 py-2 bg-blue-600 text-white rounded-lg font-medium">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}" class="px-3 py-2 border border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 rounded-lg transition">{{ $page }}</a>
+                        @endif
+                    @endforeach
+                </div>
+
+                {{-- Next Page Link --}}
+                @if ($daerahButuhRelawan->hasMorePages())
+                    <a href="{{ $daerahButuhRelawan->nextPageUrl() }}" class="px-4 py-2 border border-blue-500 text-blue-600 hover:bg-blue-50 rounded-lg transition">
+                        Berikutnya <i class="fas fa-chevron-right ml-2"></i>
+                    </a>
+                @else
+                    <span class="px-4 py-2 border border-gray-300 rounded-lg text-gray-400 cursor-not-allowed">
+                        Berikutnya <i class="fas fa-chevron-right ml-2"></i>
+                    </span>
+                @endif
+            </div>
+        </div>
     </div>
 </section>
 
@@ -392,70 +430,4 @@
     </div>
 </section>
 
-<!-- ========== KONTAK SECTION ========== -->
-<section id="kontak" class="py-20 bg-white fade-in">
-    <div class="container mx-auto px-8 md:px-32">
-        <div class="text-center mb-14">
-            <span class="text-blue-500 font-semibold text-sm uppercase tracking-wide">Hubungi Kami</span>
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">
-                Ada <span class="text-orange-500">Pertanyaan</span>?
-            </h2>
-            <div class="w-20 h-1 bg-gradient-to-r from-blue-500 to-orange-500 mx-auto mt-4 rounded-full"></div>
-            <p class="text-gray-500 mt-4">Tim kami siap membantu Anda</p>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-10">
-            <div class="space-y-6">
-                <div class="flex items-start gap-5 p-6 bg-gradient-to-r from-blue-50 to-white rounded-2xl shadow-md hover:shadow-lg transition-all">
-                    <div class="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center shadow-md">
-                        <i class="fas fa-map-marker-alt text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-800 text-lg mb-1">Alamat Kantor</h3>
-                        <p class="text-gray-600">Jakarta, Indonesia</p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-5 p-6 bg-gradient-to-r from-green-50 to-white rounded-2xl shadow-md hover:shadow-lg transition-all">
-                    <div class="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center shadow-md">
-                        <i class="fas fa-phone-alt text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-800 text-lg mb-1">Telepon</h3>
-                        <p class="text-gray-600">(021) 1234-5678</p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-5 p-6 bg-gradient-to-r from-orange-50 to-white rounded-2xl shadow-md hover:shadow-lg transition-all">
-                    <div class="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center shadow-md">
-                        <i class="fas fa-envelope text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-800 text-lg mb-1">Email</h3>
-                        <p class="text-gray-600">info@laporinaja.go.id</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                <form>
-                    <div class="mb-5">
-                        <label class="block text-gray-700 font-semibold mb-2">Nama Lengkap</label>
-                        <input type="text" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition" placeholder="Masukkan nama Anda">
-                    </div>
-                    <div class="mb-5">
-                        <label class="block text-gray-700 font-semibold mb-2">Email</label>
-                        <input type="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition" placeholder="email@anda.com">
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-gray-700 font-semibold mb-2">Pesan</label>
-                        <textarea rows="4" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition" placeholder="Tulis pesan Anda..."></textarea>
-                    </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg">
-                        <i class="fas fa-paper-plane mr-2"></i>
-                        Kirim Pesan
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</section>
 @endsection

@@ -25,7 +25,7 @@ class AdminController extends Controller
         $totalUsers = User::where('role', 'user')->count();
         
         // Laporan terbaru
-        $laporanTerbaru = Laporan::latest()->take(10)->get();
+        $laporanTerbaru = Laporan::latest()->paginate(10);
         
         // Relawan terbaru
         $relawanTerbaru = Relawan::latest()->take(5)->get();

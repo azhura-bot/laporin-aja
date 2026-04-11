@@ -155,6 +155,42 @@
         display: inline-block;
     }
     
+    /* Dropdown styling */
+    .admin-submenu {
+        margin-left: 2rem;
+        border-left: 1px solid #e2e8f0;
+        padding-left: 0.5rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .admin-submenu .admin-sidebar-link {
+        padding-left: 0.75rem;
+    }
+    
+    .admin-dropdown-icon {
+        transition: transform 0.2s ease;
+    }
+    
+    .admin-dropdown-icon.rotated {
+        transform: rotate(180deg);
+    }
+    
+    /* Active state untuk submenu items */
+    .admin-submenu .admin-sidebar-link.active {
+        background-color: #eff6ff;
+        color: #2563eb;
+    }
+    
+    /* Saat sidebar collapsed */
+    .admin-sidebar-collapsed .admin-submenu {
+        display: none !important;
+    }
+    
+    .admin-sidebar-collapsed .admin-dropdown-icon {
+        display: none;
+    }
+    
     /* Mobile responsive */
     @media (max-width: 768px) {
         .admin-sidebar-container {
@@ -222,66 +258,73 @@
                     <span class="admin-sidebar-tooltip">Dashboard</span>
                 </a>
                 
-                <!-- Semua Laporan -->
-                <a href="{{ route('admin.laporan.index') }}" 
-                   class="admin-sidebar-link px-3 py-2 rounded-xl {{ request()->routeIs('admin.laporan.*') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }} transition-all duration-200 group relative">
-                    <i class="fas fa-file-alt w-5"></i>
-                    <span class="admin-sidebar-text">Semua Laporan</span>
-                    @php $totalPending = \App\Models\Laporan::where('status', 'pending')->count(); @endphp
-                    @if($totalPending > 0)
-                    <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full admin-badge">{{ $totalPending }}</span>
-                    @endif
-                    <span class="admin-sidebar-tooltip">Semua Laporan</span>
-                </a>
+                <div class="relative">
+    <button type="button"
+        onclick="toggleStatusDropdown()"
+        class="admin-sidebar-link px-3 py-2 rounded-xl text-gray-700 hover:bg-blue-50 transition-all duration-200 group relative cursor-pointer"
+        id="kelolaStatusToggle">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" class="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+        </svg>
+        <span class="admin-sidebar-text flex-1">Kontrol Layanan</span>
+        <i class="fas fa-chevron-down text-xs transition-transform duration-200 admin-dropdown-icon" id="kelolaStatusChevron"></i>
+        <span class="admin-sidebar-tooltip">Kontrol Layanan</span>
+    </button>
+    
+    <!-- Submenu -->
+    <div id="kelolaStatusSubmenu" class="admin-submenu ml-7 mt-1 space-y-1 hidden">
+        <a href="{{ route('admin.balas-warga') }}" 
+           class="admin-sidebar-link px-3 py-2 rounded-xl text-gray-600 hover:bg-blue-50 transition-all duration-200 text-sm">
+            <i class="fas fa-reply-all w-4"></i>
+            <span class="admin-sidebar-text">Balas Warga</span>
+        </a>
+        
+        <a href="{{ route('admin.operator.index') }}" 
+           class="admin-sidebar-link px-3 py-2 rounded-xl text-gray-600 hover:bg-blue-50 transition-all duration-200 text-sm">
+            <i class="fas fa-hard-hat w-4"></i>
+            <span class="admin-sidebar-text">Kelola Operator</span>
+        </a>
+        
+        <a href="{{ route('admin.kelola-status') }}" 
+           class="admin-sidebar-link px-3 py-2 rounded-xl text-gray-600 hover:bg-blue-50 transition-all duration-200 text-sm">
+            <i class="fas fa-tasks w-4"></i>
+            <span class="admin-sidebar-text">Kelola Status</span>
+        </a>
+    </div>
+</div>
                 
-                <!-- Data & Analisis -->
-                <a href="{{ route('admin.analisis') }}" 
-                   class="admin-sidebar-link px-3 py-2 rounded-xl {{ request()->routeIs('admin.analisis') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }} transition-all duration-200 group relative">
-                    <i class="fas fa-chart-line w-5"></i>
-                    <span class="admin-sidebar-text">Data & Analisis</span>
-                    <span class="admin-sidebar-tooltip">Data & Analisis</span>
-                </a>
-                
-                <!-- Kelola Status -->
-                <a href="{{ route('admin.kelola-status') }}" 
-                   class="admin-sidebar-link px-3 py-2 rounded-xl {{ request()->routeIs('admin.kelola-status') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }} transition-all duration-200 group relative">
-                    <i class="fas fa-tasks w-5"></i>
-                    <span class="admin-sidebar-text">Kelola Status</span>
-                    <span class="admin-sidebar-tooltip">Kelola Status</span>
-                </a>
-                
-                <!-- Balas Warga -->
-                <a href="{{ route('admin.balas-warga') }}" 
-                   class="admin-sidebar-link px-3 py-2 rounded-xl {{ request()->routeIs('admin.balas-warga') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }} transition-all duration-200 group relative">
-                    <i class="fas fa-reply-all w-5"></i>
-                    <span class="admin-sidebar-text">Balas Warga</span>
-                    <span class="admin-sidebar-tooltip">Balas Warga</span>
-                </a>
-                
-                <!-- Kelola Relawan -->
-                <a href="{{ route('admin.relawan.index') }}" 
-                   class="admin-sidebar-link px-3 py-2 rounded-xl {{ request()->routeIs('admin.relawan.*') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }} transition-all duration-200 group relative">
-                    <i class="fas fa-hands-helping w-5"></i>
-                    <span class="admin-sidebar-text">Kelola Relawan</span>
-                    <span class="admin-sidebar-tooltip">Kelola Relawan</span>
-                </a>
-
-                <!-- Kelola Daerah Butuh Relawan -->
-                <a href="{{ route('admin.daerah-butuh-relawan.index') }}" 
+                <!-- Kelola Relawan Dropdown -->
+                <div class="relative">
+                    <button type="button"
+                        onclick="toggleRelawanDropdown()"
+                        class="admin-sidebar-link px-3 py-2 rounded-xl text-gray-700 hover:bg-blue-50 transition-all duration-200 group relative cursor-pointer"
+                        id="kelolaRelawanToggle">
+                        <i class="fas fa-list w-5"></i>
+                        <span class="admin-sidebar-text flex-1">Kontrol Layanan</span>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-200 admin-dropdown-icon" id="kelolaRelawanChevron"></i>
+                        <span class="admin-sidebar-tooltip">Kontrol Layanan</span>
+                    </button>
+                    
+                    <!-- Submenu -->
+                    <div id="kelolaRelawanSubmenu" class="admin-submenu ml-7 mt-1 space-y-1 hidden">
+                        <a href="{{ route('admin.relawan.index') }}" 
+                           class="admin-sidebar-link px-3 py-2 rounded-lg text-sm {{ request()->routeIs('admin.relawan.index') ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }} transition-all duration-200">
+                            <i class="fas fa-hands-helping w-4"></i>
+                            <span>Kelola Relawan</span>
+                        </a>
+                        <a href="{{ route('admin.daerah-butuh-relawan.index') }}" 
                    class="admin-sidebar-link px-3 py-2 rounded-xl {{ request()->routeIs('admin.daerah-butuh-relawan.*') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }} transition-all duration-200 group relative">
                     <i class="fas fa-map-marked-alt w-5"></i>
                     <span class="admin-sidebar-text">Daerah Butuh Relawan</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Kelola Daerah Butuh Relawan -->
+                
                     <span class="admin-sidebar-tooltip">Daerah Butuh Relawan</span>
                 </a>
             </nav>
-
-                <!-- Kelola Operator -->
-                <a href="{{ route('admin.operator.index') }}" 
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('admin.operator.*') ? 'sidebar-active' : 'text-gray-700 hover:bg-blue-50' }} transition-all duration-200">
-                    <i class="fas fa-hard-hat w-5"></i>
-                    <span class="admin-sidebar-text">Kelola Operator</span>
-                    <span class="admin-sidebar-tooltip">Kelola Operator</span>
-                    </a>
             
             <!-- Divider -->
             <div class="border-t my-6"></div>
@@ -347,16 +390,59 @@
         }
     }
     
+    function toggleStatusDropdown() {
+        const submenu = document.getElementById('kelolaStatusSubmenu');
+        const icon = document.getElementById('kelolaStatusChevron');
+        
+        if (!submenu || !icon) return;
+        
+        submenu.classList.toggle('hidden');
+        icon.classList.toggle('rotated');
+        
+        // Close other dropdowns if needed
+        const allDropdowns = document.querySelectorAll('.relative .admin-submenu');
+        allDropdowns.forEach(dropdown => {
+            if (dropdown !== submenu && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+                const otherIcon = dropdown.closest('.relative').querySelector('.admin-dropdown-icon');
+                if (otherIcon) otherIcon.classList.remove('rotated');
+            }
+        });
+    }
+    
+    function toggleRelawanDropdown() {
+        const submenu = document.getElementById('kelolaRelawanSubmenu');
+        const icon = document.getElementById('kelolaRelawanChevron');
+        
+        if (!submenu || !icon) return;
+        
+        submenu.classList.toggle('hidden');
+        icon.classList.toggle('rotated');
+        
+        // Close other dropdowns if needed
+        const allDropdowns = document.querySelectorAll('.relative .admin-submenu');
+        allDropdowns.forEach(dropdown => {
+            if (dropdown !== submenu && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+                const otherIcon = dropdown.closest('.relative').querySelector('.admin-dropdown-icon');
+                if (otherIcon) otherIcon.classList.remove('rotated');
+            }
+        });
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
+        // Set initial sidebar state
         if (window.innerWidth > 768) {
             adminSidebarContainer.classList.add('admin-sidebar-collapsed');
         }
         
+        // Setup trigger area
         const triggerArea = document.querySelector('.admin-sidebar-trigger');
         if (triggerArea) {
             triggerArea.addEventListener('mouseenter', expandAdminSidebar);
         }
         
+        // Setup sidebar hover events
         adminSidebarContainer.addEventListener('mouseenter', function() {
             adminIsHovering = true;
             if (window.innerWidth > 768) expandAdminSidebar();
@@ -365,6 +451,31 @@
         adminSidebarContainer.addEventListener('mouseleave', function() {
             adminIsHovering = false;
             if (window.innerWidth > 768) collapseAdminSidebar();
+        });
+        
+        // Keep dropdown open based on active route
+        const currentUrl = window.location.href;
+        const dropdowns = document.querySelectorAll('.relative');
+        
+        dropdowns.forEach(dropdown => {
+            const submenu = dropdown.querySelector('.admin-submenu');
+            if (submenu) {
+                const links = submenu.querySelectorAll('a');
+                let isActive = false;
+                
+                links.forEach(link => {
+                    if (link.href === currentUrl) {
+                        isActive = true;
+                        link.classList.add('active');
+                    }
+                });
+                
+                if (isActive) {
+                    submenu.classList.remove('hidden');
+                    const icon = dropdown.querySelector('.admin-dropdown-icon');
+                    if (icon) icon.classList.add('rotated');
+                }
+            }
         });
     });
     

@@ -157,6 +157,7 @@
             <!-- Status Aktif -->
             <div>
                 <label class="flex items-center">
+                    <input type="hidden" name="aktif" value="0">
                     <input type="checkbox" name="aktif" value="1" {{ old('aktif', $daerah->aktif) ? 'checked' : '' }}
                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                     <span class="ml-2 text-gray-700">Aktifkan daerah ini untuk ditampilkan di halaman publik</span>

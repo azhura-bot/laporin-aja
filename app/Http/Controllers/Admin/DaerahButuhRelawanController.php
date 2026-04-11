@@ -10,7 +10,7 @@ class DaerahButuhRelawanController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DaerahButuhRelawan::query();
+        $query = DaerahButuhRelawan::with('relawans');
 
         // Filter provinsi
         if ($request->provinsi) {
@@ -64,9 +64,12 @@ class DaerahButuhRelawanController extends Controller
             'deskripsi' => 'nullable|string',
             'prioritas' => 'required|in:rendah,sedang,tinggi,kritis',
             'relawan_dibutuhkan' => 'required|integer|min:1',
-            'aktif' => 'boolean'
+            'aktif' => 'required|boolean'
         ]);
 
+        // Convert to true boolean ("0" or "1" strings)
+        $validated['aktif'] = $validated['aktif'] == '1';
+        
         DaerahButuhRelawan::create($validated);
 
         return redirect()->route('admin.daerah-butuh-relawan.index')
@@ -75,7 +78,7 @@ class DaerahButuhRelawanController extends Controller
 
     public function show($id)
     {
-        $daerah = DaerahButuhRelawan::findOrFail($id);
+        $daerah = DaerahButuhRelawan::with('relawans.user')->findOrFail($id);
         return view('admin.daerah-butuh-relawan.show', compact('daerah'));
     }
 
@@ -93,8 +96,11 @@ class DaerahButuhRelawanController extends Controller
             'deskripsi' => 'nullable|string',
             'prioritas' => 'required|in:rendah,sedang,tinggi,kritis',
             'relawan_dibutuhkan' => 'required|integer|min:1',
-            'aktif' => 'boolean'
+            'aktif' => 'required|boolean'
         ]);
+
+        // Convert to true boolean ("0" or "1" strings)
+        $validated['aktif'] = $validated['aktif'] == '1';
 
         $daerah = DaerahButuhRelawan::findOrFail($id);
         $daerah->update($validated);

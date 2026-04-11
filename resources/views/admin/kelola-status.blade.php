@@ -121,8 +121,30 @@
                     </h3>
                     <p class="text-sm text-gray-500 mt-0.5">Kelola status semua laporan yang masuk</p>
                 </div>
-                <div class="text-sm text-gray-400">
-                    Total: <span id="totalVisible">{{ $laporan->total() }}</span> laporan
+                <div class="flex items-center gap-3">
+                    <!-- Dropdown Menu -->
+                    <div class="relative">
+                        <button onclick="toggleDropdown()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition text-sm flex items-center gap-2">
+                            <i class="fas fa-cog"></i>
+                            Menu
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10 hidden">
+                            <div class="py-1">
+                                <a href="{{ route('admin.balas-warga') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition">
+                                    <i class="fas fa-reply mr-2 text-blue-500"></i>
+                                    Balas Warga
+                                </a>
+                                <a href="{{ route('admin.operator.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition">
+                                    <i class="fas fa-users-cog mr-2 text-green-500"></i>
+                                    Kelola Operator
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-400">
+                        Total: <span id="totalVisible">{{ $laporan->total() }}</span> laporan
+                    </div>
                 </div>
             </div>
         </div>
@@ -409,6 +431,23 @@
     // Initialize tooltips
     document.addEventListener('DOMContentLoaded', function() {
         filterTable();
+    });
+    
+    // Dropdown toggle
+    function toggleDropdown() {
+        const dropdown = document.getElementById('dropdownMenu');
+        dropdown.classList.toggle('hidden');
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('dropdownMenu');
+        const button = e.target.closest('button');
+        if (!button || !button.onclick || button.onclick.toString().indexOf('toggleDropdown') === -1) {
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+            }
+        }
     });
 </script>
 @endsection

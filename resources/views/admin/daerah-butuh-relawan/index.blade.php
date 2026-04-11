@@ -5,6 +5,16 @@
 
 @section('admin-content')
 <div class="fade-in">
+    <!-- Success Message -->
+    @if(session('success'))
+    <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    </div>
+    @endif
+
     <!-- Statistik Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div class="bg-white rounded-xl shadow p-4">

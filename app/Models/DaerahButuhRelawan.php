@@ -52,6 +52,11 @@ class DaerahButuhRelawan extends Model
         return $badges[$this->prioritas] ?? 'bg-gray-100 text-gray-800';
     }
 
+    public function getRelawanTerdaftarAttribute()
+    {
+        return $this->relawans()->count();
+    }
+
     public function getRelawanTersediaAttribute()
     {
         return max(0, $this->relawan_dibutuhkan - $this->relawan_terdaftar);
