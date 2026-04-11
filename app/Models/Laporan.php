@@ -19,7 +19,8 @@ class Laporan extends Model
         'judul_laporan',
         'deskripsi',
         'lampiran',
-        'status'
+        'status',
+        'user_id'
     ];
 
     protected $casts = [
@@ -56,4 +57,8 @@ class Laporan extends Model
         
         return in_array($extension, $extensions);
     }
+    public function tanggapan()
+{
+    return $this->hasMany(Tanggapan::class);
+}
 }
