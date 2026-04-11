@@ -1,7 +1,7 @@
 <nav class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md shadow-lg z-50 transition-all duration-300">
     <div class="container mx-auto px-6 md:px-24 flex justify-between items-center py-4">
-        <a href="{{ url('/') }}" class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent hover:from-blue-700 hover:to-blue-900 transition tracking-tight">
-            LaporinAja
+        <a href="{{ url('/') }}" class="inline-flex items-center" aria-label="LaporinAja">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo LaporinAja" class="h-10 w-auto md:h-12 object-contain">
         </a>
 
         <!-- Menu Desktop -->
