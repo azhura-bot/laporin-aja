@@ -9,6 +9,8 @@
             <p class="text-xs text-gray-500">
                 @if(Auth::user()->role == 'admin')
                     <i class="fas fa-shield-alt text-blue-500 text-xs"></i> Administrator
+                @elseif(Auth::user()->role == 'operator')
+                    <i class="fas fa-hard-hat text-amber-500 text-xs"></i> {{ $metaText ?? 'Operator Lapangan' }}
                 @else
                     <i class="fas fa-user text-green-500 text-xs"></i> {{ $metaText ?? 'Pengguna' }}
                 @endif

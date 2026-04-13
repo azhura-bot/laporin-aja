@@ -12,6 +12,14 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
+
+        if ($user?->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($user?->isOperator()) {
+            return redirect()->route('operator.dashboard');
+        }
         
         // Statistik sederhana
         $totalLaporan = Laporan::where('user_id', $user->id)->count();

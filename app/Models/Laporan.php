@@ -22,19 +22,34 @@ class Laporan extends Model
         'deskripsi',
         'lampiran',
         'status',
-        'user_id'
+        'user_id',
+        'operator_id',
+        'catatan_operator',
+        'bukti_penanganan',
+        'ditugaskan_at',
+        'diproses_at',
+        'selesai_at',
     ];
 
     protected $casts = [
         'tanggal_kejadian' => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'ditugaskan_at' => 'datetime',
+        'diproses_at' => 'datetime',
+        'selesai_at' => 'datetime',
     ];
 
     // Relasi ke User
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Relasi ke Operator
+    public function operator()
+    {
+        return $this->belongsTo(User::class, 'operator_id');
     }
 
     // Relasi ke Tanggapan (ONE TO MANY)
@@ -85,6 +100,27 @@ class Laporan extends Model
         $extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
         $extension = strtolower(pathinfo($this->lampiran, PATHINFO_EXTENSION));
         
+        return in_array($extension, $extensions);
+    }
+
+    // Accessor untuk bukti penanganan URL
+    public function getBuktiPenangananUrlAttribute()
+    {
+        if ($this->bukti_penanganan) {
+            return asset('storage/' . $this->bukti_penanganan);
+        }
+
+        return null;
+    }
+
+    // Cek apakah bukti penanganan adalah gambar
+    public function getIsBuktiPenangananImageAttribute()
+    {
+        if (!$this->bukti_penanganan) return false;
+
+        $extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+        $extension = strtolower(pathinfo($this->bukti_penanganan, PATHINFO_EXTENSION));
+
         return in_array($extension, $extensions);
     }
 }

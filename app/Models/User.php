@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'no_hp',
         'role',
+        'status',
     ];
 
     /**
@@ -58,6 +59,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Cek apakah user adalah operator
+     */
+    public function isOperator(): bool
+    {
+        return $this->role === 'operator';
+    }
+
+    /**
      * Relasi ke Laporan (User memiliki banyak laporan)
      */
     public function laporans()
@@ -71,5 +80,13 @@ class User extends Authenticatable
     public function relawan()
     {
         return $this->hasOne(Relawan::class);
+    }
+
+    /**
+     * Laporan yang ditugaskan ke operator
+     */
+    public function assignedLaporans()
+    {
+        return $this->hasMany(Laporan::class, 'operator_id');
     }
 }

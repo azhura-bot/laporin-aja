@@ -69,6 +69,7 @@
                             <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Kategori</th>
                             <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Lokasi</th>
                             <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                            <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Operator</th>
                             <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
                         </tr>
                     </thead>
@@ -202,6 +203,19 @@
                                     <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full whitespace-nowrap">
                                         <i class="fas fa-check mr-1"></i> Selesai
                                     </span>
+                                @endif
+                            </td>
+
+                            <td class="px-4 py-4 text-sm text-gray-600">
+                                @if($item->operator)
+                                    <div class="flex items-center gap-2">
+                                        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-600">
+                                            {{ strtoupper(substr($item->operator->name, 0, 1)) }}
+                                        </span>
+                                        <span>{{ $item->operator->name }}</span>
+                                    </div>
+                                @else
+                                    <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-500">Belum ditugaskan</span>
                                 @endif
                             </td>
                             

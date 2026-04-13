@@ -4,7 +4,7 @@
 @section('page-description', 'Informasi lengkap laporan masyarakat')
 
 @section('admin-content')
-<div class="fade-in max-w-4xl mx-auto">
+<div class="fade-in max-w-5xl mx-auto">
     <!-- Tombol Kembali -->
     <div class="mb-6">
         <a href="{{ route('admin.laporan.index') }}" class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-800">
@@ -88,6 +88,58 @@
                 </div>
             </div>
 
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">
+                    <i class="fas fa-user-check mr-2 text-blue-500"></i>
+                    Penugasan Operator
+                </h2>
+
+                <div class="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
+                    <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                        <p class="text-sm text-gray-500">Operator Saat Ini</p>
+
+                        @if($laporan->operator)
+                            <div class="mt-3 flex items-start gap-3">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-lg font-bold text-blue-600">
+                                    {{ strtoupper(substr($laporan->operator->name, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-800">{{ $laporan->operator->name }}</p>
+                                    <p class="text-sm text-gray-500">{{ $laporan->operator->email }}</p>
+                                    <p class="text-sm text-gray-500">{{ $laporan->operator->no_hp ?? '-' }}</p>
+                                    <p class="mt-2 text-xs text-gray-400">Ditugaskan {{ optional($laporan->ditugaskan_at)->format('d F Y H:i') ?? '-' }}</p>
+                                </div>
+                            </div>
+                        @else
+                            <p class="mt-3 inline-flex rounded-full bg-gray-200 px-3 py-1 text-sm font-medium text-gray-600">Belum ada operator yang ditugaskan</p>
+                        @endif
+                    </div>
+
+                    <form action="{{ route('admin.laporan.assignOperator', $laporan->id) }}" method="POST" class="rounded-xl border border-blue-100 bg-blue-50 p-4">
+                        @csrf
+                        @method('PUT')
+
+                        <label class="mb-2 block text-sm font-medium text-gray-700">Tetapkan Operator</label>
+                        <select name="operator_id" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:border-blue-500">
+                            <option value="">Belum ditugaskan</option>
+                            @foreach($operators as $operator)
+                                <option value="{{ $operator->id }}" @selected(old('operator_id', $laporan->operator_id) == $operator->id)>
+                                    {{ $operator->name }} - {{ $operator->email }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('operator_id')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+
+                        <button type="submit" class="mt-4 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700">
+                            <i class="fas fa-paper-plane"></i>
+                            Simpan Penugasan
+                        </button>
+                    </form>
+                </div>
+            </div>
+
             <!-- Lampiran -->
             @if($laporan->lampiran)
             <div class="mb-6">
@@ -105,6 +157,36 @@
                         <i class="fas fa-download"></i>
                         Download Lampiran
                     </a>
+                @endif
+            </div>
+            @endif
+
+            @if($laporan->catatan_operator || $laporan->bukti_penanganan)
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">
+                    <i class="fas fa-clipboard-check mr-2 text-blue-500"></i>
+                    Hasil Tindak Lanjut Operator
+                </h2>
+
+                @if($laporan->catatan_operator)
+                    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+                        <p class="text-sm font-semibold text-emerald-800">Catatan Operator</p>
+                        <p class="mt-2 text-sm leading-6 text-emerald-900">{{ $laporan->catatan_operator }}</p>
+                    </div>
+                @endif
+
+                @if($laporan->bukti_penanganan)
+                    <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                        <p class="mb-3 text-sm font-semibold text-gray-700">Bukti Penanganan</p>
+                        @if($laporan->is_bukti_penanganan_image)
+                            <img src="{{ $laporan->bukti_penanganan_url }}" alt="Bukti penanganan" class="max-h-96 rounded-lg object-contain">
+                        @else
+                            <a href="{{ $laporan->bukti_penanganan_url }}" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700">
+                                <i class="fas fa-download"></i>
+                                Download Bukti Penanganan
+                            </a>
+                        @endif
+                    </div>
                 @endif
             </div>
             @endif
@@ -127,6 +209,19 @@
                             <p class="text-sm text-gray-500">{{ $laporan->created_at->format('d F Y H:i:s') }}</p>
                         </div>
                     </div>
+                    @if($laporan->operator)
+                    <div class="flex gap-3">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user-check text-indigo-600 text-sm"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-800">Operator Ditugaskan</p>
+                            <p class="text-sm text-gray-500">{{ optional($laporan->ditugaskan_at)->format('d F Y H:i:s') ?? '-' }}</p>
+                        </div>
+                    </div>
+                    @endif
                     @if($laporan->status != 'pending')
                     <div class="flex gap-3">
                         <div class="flex-shrink-0">
@@ -136,7 +231,7 @@
                         </div>
                         <div>
                             <p class="font-medium text-gray-800">Laporan Diproses</p>
-                            <p class="text-sm text-gray-500">{{ $laporan->updated_at->format('d F Y H:i:s') }}</p>
+                            <p class="text-sm text-gray-500">{{ optional($laporan->diproses_at)->format('d F Y H:i:s') ?? $laporan->updated_at->format('d F Y H:i:s') }}</p>
                         </div>
                     </div>
                     @endif
@@ -149,7 +244,7 @@
                         </div>
                         <div>
                             <p class="font-medium text-gray-800">Laporan Selesai</p>
-                            <p class="text-sm text-gray-500">{{ $laporan->updated_at->format('d F Y H:i:s') }}</p>
+                            <p class="text-sm text-gray-500">{{ optional($laporan->selesai_at)->format('d F Y H:i:s') ?? $laporan->updated_at->format('d F Y H:i:s') }}</p>
                         </div>
                     </div>
                     @endif

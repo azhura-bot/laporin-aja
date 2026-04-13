@@ -18,7 +18,7 @@ return new class extends Migration
         // Cek apakah kolom role sudah ada, jika belum tambahkan
         if (!Schema::hasColumn('users', 'role')) {
             Schema::table('users', function (Blueprint $table) {
-                $table->enum('role', ['user', 'admin'])->default('user')->after('no_hp');
+                $table->enum('role', ['user', 'admin', 'operator'])->default('user')->after('no_hp');
             });
         }
     }

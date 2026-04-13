@@ -10,7 +10,7 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::check() || Auth::user()->role !== 'admin') {
+        if (!Auth::check() || !Auth::user()->isAdmin()) {
             return redirect('/dashboard')->with('error', 'Anda tidak memiliki akses ke halaman admin!');
         }
         
