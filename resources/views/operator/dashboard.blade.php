@@ -98,9 +98,9 @@
                     <p class="text-sm text-gray-600 mt-1">Mulai dari status yang benar, isi catatan penanganan dengan jelas, lalu unggah bukti lapangan saat pekerjaan selesai.</p>
                 </div>
             </div>
-            <a href="{{ route('operator.laporan.index') }}" class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition text-sm font-semibold">
+            <button type="button" onclick="goToUrl('{{ route('operator.laporan.index') }}')" class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition text-sm font-semibold">
                 Buka Laporan Saya
-            </a>
+            </button>
         </div>
     </div>
 
@@ -114,9 +114,9 @@
                     </h2>
                     <p class="text-sm text-gray-500 mt-1">Laporan pending dan diproses yang sedang Anda tangani</p>
                 </div>
-                <a href="{{ route('operator.laporan.index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                <button type="button" onclick="goToUrl('{{ route('operator.laporan.index') }}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
                     Lihat Semua <i class="fas fa-arrow-right text-xs"></i>
-                </a>
+                </button>
             </div>
         </div>
         <div class="overflow-x-auto">
@@ -128,12 +128,11 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Lokasi</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ditugaskan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @forelse($laporanAktif as $laporan)
-                        <tr class="hover:bg-gray-50 transition">
+                        <tr class="hover:bg-gray-50 transition cursor-pointer" onclick="goToUrl('{{ route('operator.laporan.show', $laporan->id) }}')">
                             <td class="px-6 py-4 text-sm text-gray-900">#{{ $laporan->id }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ Str::limit($laporan->judul_laporan, 42) }}</td>
                             <td class="px-6 py-4 text-sm text-gray-500">{{ Str::limit($laporan->lokasi, 40) }}</td>
@@ -147,11 +146,6 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-500">{{ optional($laporan->ditugaskan_at)->format('d/m/Y H:i') ?? '-' }}</td>
-                            <td class="px-6 py-4">
-                                <a href="{{ route('operator.laporan.show', $laporan->id) }}" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm transition">
-                                    Detail
-                                </a>
-                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -173,9 +167,9 @@
                     </h2>
                     <p class="text-sm text-gray-500 mt-1">Laporan selesai terakhir dari akun operator Anda</p>
                 </div>
-                <a href="{{ route('operator.laporan.history') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                <button type="button" onclick="goToUrl('{{ route('operator.laporan.history') }}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
                     Lihat Semua <i class="fas fa-arrow-right text-xs"></i>
-                </a>
+                </button>
             </div>
         </div>
         <div class="overflow-x-auto">
@@ -186,21 +180,15 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Judul Laporan</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Lokasi</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Selesai</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @forelse($riwayatTerbaru as $laporan)
-                        <tr class="hover:bg-gray-50 transition">
+                        <tr class="hover:bg-gray-50 transition cursor-pointer" onclick="goToUrl('{{ route('operator.laporan.history.show', $laporan->id) }}')">
                             <td class="px-6 py-4 text-sm text-gray-900">#{{ $laporan->id }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ Str::limit($laporan->judul_laporan, 42) }}</td>
                             <td class="px-6 py-4 text-sm text-gray-500">{{ Str::limit($laporan->lokasi, 40) }}</td>
                             <td class="px-6 py-4 text-sm text-gray-500">{{ optional($laporan->selesai_at)->format('d/m/Y H:i') ?? '-' }}</td>
-                            <td class="px-6 py-4">
-                                <a href="{{ route('operator.laporan.history.show', $laporan->id) }}" class="px-3 py-2 border border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50 text-sm transition">
-                                    Detail
-                                </a>
-                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -212,4 +200,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    function goToUrl(url) {
+        window.location.href = url;
+    }
+</script>
 @endsection

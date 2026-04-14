@@ -72,12 +72,11 @@
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Status</th>
                             @endunless
                             <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Tugas</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @foreach($laporan as $item)
-                            <tr class="hover:bg-slate-50">
+                            <tr class="hover:bg-slate-50 cursor-pointer" onclick="goToUrl('{{ $historyMode ? route('operator.laporan.history.show', $item) : route('operator.laporan.show', $item) }}')">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-4">
                                         <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl bg-slate-100">
@@ -125,13 +124,12 @@
                                 </td>
 
                                 <td class="px-6 py-4">
-                                    <a href="{{ $historyMode ? route('operator.laporan.history.show', $item) : route('operator.laporan.show', $item) }}"
-                                       class="inline-flex items-center rounded-2xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700">
-                                        {{ $historyMode ? 'Lihat Detail' : 'Proses' }}
-                                    </a>
+                                    <button type="button" onclick="event.stopPropagation(); goToUrl('{{ $historyMode ? route('operator.laporan.history.show', $item) : route('operator.laporan.show', $item) }}')"
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
+
                     </tbody>
                 </table>
             @else
@@ -148,3 +146,9 @@
     </div>
 </div>
 @endsection
+
+<script>
+    function goToUrl(url) {
+        window.location.href = url;
+    }
+</script>

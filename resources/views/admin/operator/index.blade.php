@@ -121,10 +121,11 @@
                         <td class="px-4 py-3 text-sm text-gray-500">{{ $operator->created_at->format('d/m/Y') }}</td>
                         <td class="px-4 py-3 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <a href="{{ route('admin.operator.edit', $operator->id) }}" 
-                                   class="text-yellow-600 hover:text-yellow-800 transition" title="Edit">
+                                <button type="button" onclick="openEditOperator({{ $operator->id }})"
+                                        class="text-yellow-600 hover:text-yellow-800 transition"
+                                        title="Edit">
                                     <i class="fas fa-edit"></i>
-                                </a>
+                                </button>
                                 <button onclick="changeStatus({{ $operator->id }}, '{{ $operator->status }}')" 
                                         class="text-blue-600 hover:text-blue-800 transition" title="Ubah Status">
                                     <i class="fas fa-toggle-on"></i>
@@ -208,6 +209,11 @@
         const modal = document.getElementById('statusModal');
         modal.classList.add('hidden');
         modal.classList.remove('flex');
+    }
+
+    function openEditOperator(id) {
+        const editUrl = `/admin/operator/${id}/edit`;
+        window.location.href = editUrl;
     }
     
     // Select All
