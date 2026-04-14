@@ -314,7 +314,7 @@
                         </a>
                         <a href="{{ route('admin.daerah-butuh-relawan.index') }}" 
                    class="admin-sidebar-link px-3 py-2 rounded-xl {{ request()->routeIs('admin.daerah-butuh-relawan.*') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }} transition-all duration-200 group relative">
-                    <i class="fas fa-map-marked-alt w-5"></i>
+                    <i class="fas fa-globe-asia w-5"></i>
                     <span class="admin-sidebar-text">Daerah Butuh Relawan</span>
                         </a>
                     </div>

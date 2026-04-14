@@ -192,26 +192,9 @@
                     <span class="admin-sidebar-text">Riwayat</span>
                     <span class="admin-sidebar-tooltip">Riwayat</span>
                 </a>
-
-                <a href="{{ route('profile.edit') }}"
-                   class="admin-sidebar-link px-3 py-2 rounded-xl text-gray-700 hover:bg-blue-50 transition-all duration-200 group relative">
-                    <i class="fas fa-user-cog w-5"></i>
-                    <span class="admin-sidebar-text">Profil</span>
-                    <span class="admin-sidebar-tooltip">Profil</span>
-                </a>
             </nav>
 
             <div class="border-t my-6"></div>
-
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit"
-                        class="w-full admin-sidebar-link px-3 py-2 rounded-xl text-red-600 hover:bg-red-50 transition-all duration-200 group relative">
-                    <i class="fas fa-sign-out-alt w-5"></i>
-                    <span class="admin-sidebar-text">Logout</span>
-                    <span class="admin-sidebar-tooltip">Logout</span>
-                </button>
-            </form>
         </div>
     </div>
 </div>
