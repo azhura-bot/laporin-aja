@@ -87,12 +87,12 @@
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">No HP</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Tanggal Dibuat</th>
-                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @forelse($operators as $operator)
-                    <tr class="hover:bg-gray-50 transition">
+                    <tr class="hover:bg-gray-50 transition cursor-pointer operator-row" 
+                        onclick="window.location.href='{{ route('admin.operator.edit', $operator->id) }}'">
                         <td class="px-4 py-3">
                             <input type="checkbox" class="rowCheckbox rounded border-gray-300" value="{{ $operator->id }}">
                         </td>
@@ -119,31 +119,10 @@
                             @endif
                         </td>
                         <td class="px-4 py-3 text-sm text-gray-500">{{ $operator->created_at->format('d/m/Y') }}</td>
-                        <td class="px-4 py-3 text-center">
-                            <div class="flex items-center justify-center gap-2">
-                                <button type="button" onclick="openEditOperator({{ $operator->id }})"
-                                        class="text-yellow-600 hover:text-yellow-800 transition"
-                                        title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button onclick="changeStatus({{ $operator->id }}, '{{ $operator->status }}')" 
-                                        class="text-blue-600 hover:text-blue-800 transition" title="Ubah Status">
-                                    <i class="fas fa-toggle-on"></i>
-                                </button>
-                                <form action="{{ route('admin.operator.destroy', $operator->id) }}" method="POST" class="inline"
-                                      onsubmit="return confirm('Yakin ingin menghapus operator ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800 transition" title="Hapus">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="px-4 py-8 text-center text-gray-500">
+                        <td colspan="7" class="px-4 py-8 text-center text-gray-500">
                             <i class="fas fa-users text-4xl text-gray-300 mb-2 block"></i>
                             Belum ada operator lapangan
                         </td>
@@ -159,63 +138,7 @@
     </div>
 </div>
 
-<!-- Modal Ubah Status -->
-<div id="statusModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
-    <div class="bg-white rounded-xl shadow-xl w-96 p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-bold text-gray-800">Ubah Status Operator</h3>
-            <button onclick="closeStatusModal()" class="text-gray-400 hover:text-gray-600">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <form id="statusForm" method="POST">
-            @csrf
-            @method('PUT')
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Status</label>
-                <select name="status" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500">
-                    <option value="aktif">Aktif</option>
-                    <option value="nonaktif">Nonaktif</option>
-                </select>
-            </div>
-            <div class="flex gap-3">
-                <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition">
-                    Simpan
-                </button>
-                <button type="button" onclick="closeStatusModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 rounded-lg transition">
-                    Batal
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <script>
-    let currentOperatorId = null;
-    
-    function changeStatus(id, currentStatus) {
-        currentOperatorId = id;
-        const modal = document.getElementById('statusModal');
-        const form = document.getElementById('statusForm');
-        const select = form.querySelector('select');
-        
-        select.value = currentStatus;
-        form.action = `/admin/operator/${id}/status`;
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-    
-    function closeStatusModal() {
-        const modal = document.getElementById('statusModal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }
-
-    function openEditOperator(id) {
-        const editUrl = `/admin/operator/${id}/edit`;
-        window.location.href = editUrl;
-    }
-    
     // Select All
     const selectAll = document.getElementById('selectAll');
     if (selectAll) {
@@ -224,9 +147,11 @@
         });
     }
     
-    // Close modal when clicking outside
-    document.getElementById('statusModal')?.addEventListener('click', function(e) {
-        if (e.target === this) closeStatusModal();
+    // Prevent row click when clicking checkbox
+    document.querySelectorAll('.rowCheckbox').forEach(checkbox => {
+        checkbox.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
     });
 </script>
 @endsection

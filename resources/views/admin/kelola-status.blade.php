@@ -121,6 +121,7 @@
                     </h3>
                     <p class="text-sm text-gray-500 mt-0.5">Kelola status semua laporan yang masuk</p>
                 </div>
+                <div class="flex items-center gap-3">
                     <div class="text-sm text-gray-400">
                         Total: <span id="totalVisible">{{ $laporan->total() }}</span> laporan
                     </div>
@@ -410,23 +411,6 @@
     // Initialize tooltips
     document.addEventListener('DOMContentLoaded', function() {
         filterTable();
-    });
-    
-    // Dropdown toggle
-    function toggleDropdown() {
-        const dropdown = document.getElementById('dropdownMenu');
-        dropdown.classList.toggle('hidden');
-    }
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-        const dropdown = document.getElementById('dropdownMenu');
-        const button = e.target.closest('button');
-        if (!button || !button.onclick || button.onclick.toString().indexOf('toggleDropdown') === -1) {
-            if (dropdown && !dropdown.classList.contains('hidden')) {
-                dropdown.classList.add('hidden');
-            }
-        }
     });
 </script>
 @endsection
