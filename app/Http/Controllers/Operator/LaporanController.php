@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Operator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Laporan;
+use App\Services\MediaStorageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class LaporanController extends Controller
 {
+    public function __construct(
+        private readonly MediaStorageService $mediaStorage
+    ) {
+    }
+
     public function index(Request $request)
     {
         $laporan = $this->buildQuery($request, false)
@@ -95,12 +100,11 @@ class LaporanController extends Controller
         }
 
         if ($request->hasFile('bukti_penanganan')) {
-            if ($laporan->bukti_penanganan && Storage::disk('public')->exists($laporan->bukti_penanganan)) {
-                Storage::disk('public')->delete($laporan->bukti_penanganan);
-            }
-
-            $laporan->bukti_penanganan = $request->file('bukti_penanganan')
-                ->store('operator-bukti', 'public');
+            $this->mediaStorage->deleteFile($laporan->bukti_penanganan);
+            $laporan->bukti_penanganan = $this->mediaStorage->storeUploadedFile(
+                $request->file('bukti_penanganan'),
+                'operator-bukti'
+            );
         }
 
         if ($request->filled('catatan_operator')) {

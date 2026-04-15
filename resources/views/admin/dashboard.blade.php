@@ -169,7 +169,7 @@
                         <td class="px-6 py-4">
                             @if($laporan->lampiran)
                                 <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                                    <img src="{{ asset('storage/' . $laporan->lampiran) }}" alt="Laporan" class="w-full h-full object-cover">
+                                    <img src="{{ $laporan->lampiran_url }}" alt="Laporan" class="w-full h-full object-cover">
                                 </div>
                             @else
                                 <div class="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center">

@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Laporan;
+use App\Services\MediaStorageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log; // Tambahkan untuk debugging
+use Throwable;
 
 class LaporanController extends Controller
 {
+    public function __construct(
+        private readonly MediaStorageService $mediaStorage
+    ) {
+    }
 
     /**
      * Menampilkan semua laporan milik user
@@ -65,16 +70,17 @@ class LaporanController extends Controller
             'lampiran' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120'
         ]);
 
-        // Upload file
-        $lampiranPath = null;
-        if ($request->hasFile('lampiran')) {
-            $file = $request->file('lampiran');
-            $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
-            $lampiranPath = $file->storeAs('lampiran', $fileName, 'public');
-        }
-
         // Simpan ke database
         try {
+            $lampiranPath = null;
+
+            if ($request->hasFile('lampiran')) {
+                $lampiranPath = $this->mediaStorage->storeUploadedFile(
+                    $request->file('lampiran'),
+                    'lampiran'
+                );
+            }
+
             $laporan = Laporan::create([
                 'nama_pelapor' => $validated['nama_pelapor'],
                 'no_hp' => $validated['no_hp'],
@@ -91,7 +97,7 @@ class LaporanController extends Controller
 
             return redirect()->route('laporan.index')
                              ->with('success', 'Laporan berhasil dikirim!');
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             Log::error('Error saving report: ' . $e->getMessage());
             return redirect()->back()
                              ->withInput()
@@ -158,22 +164,27 @@ class LaporanController extends Controller
             'lampiran' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120'
         ]);
         
-        // Upload file baru
-        if ($request->hasFile('lampiran')) {
-            if ($laporan->lampiran && Storage::disk('public')->exists($laporan->lampiran)) {
-                Storage::disk('public')->delete($laporan->lampiran);
+        try {
+            // Upload file baru
+            if ($request->hasFile('lampiran')) {
+                $this->mediaStorage->deleteFile($laporan->lampiran);
+                $validated['lampiran'] = $this->mediaStorage->storeUploadedFile(
+                    $request->file('lampiran'),
+                    'lampiran'
+                );
             }
-            
-            $file = $request->file('lampiran');
-            $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
-            $lampiranPath = $file->storeAs('lampiran', $fileName, 'public');
-            $validated['lampiran'] = $lampiranPath;
+
+            $laporan->update($validated);
+
+            return redirect()->route('laporan.show', $laporan->id)
+                             ->with('success', 'Laporan berhasil diperbarui!');
+        } catch (Throwable $e) {
+            Log::error('Error updating report: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat memperbarui laporan: ' . $e->getMessage());
         }
-        
-        $laporan->update($validated);
-        
-        return redirect()->route('laporan.show', $laporan->id)
-                         ->with('success', 'Laporan berhasil diperbarui!');
     }
 
     /**
@@ -188,14 +199,19 @@ class LaporanController extends Controller
                              ->with('error', 'Laporan yang sudah diproses tidak dapat dihapus!');
         }
         
-        // Hapus file lampiran
-        if ($laporan->lampiran && Storage::disk('public')->exists($laporan->lampiran)) {
-            Storage::disk('public')->delete($laporan->lampiran);
+        try {
+            // Hapus file lampiran
+            $this->mediaStorage->deleteFile($laporan->lampiran);
+
+            $laporan->delete();
+
+            return redirect()->route('laporan.index')
+                             ->with('success', 'Laporan berhasil dihapus!');
+        } catch (Throwable $e) {
+            Log::error('Error deleting report: ' . $e->getMessage());
+
+            return redirect()->route('laporan.index')
+                ->with('error', 'Terjadi kesalahan saat menghapus laporan: ' . $e->getMessage());
         }
-        
-        $laporan->delete();
-        
-        return redirect()->route('laporan.index')
-                         ->with('success', 'Laporan berhasil dihapus!');
     }
 }

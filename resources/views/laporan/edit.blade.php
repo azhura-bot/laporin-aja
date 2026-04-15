@@ -93,22 +93,14 @@
                             {{-- Cek apakah file adalah gambar --}}
                             @php
                                 $lampiranPath = $laporan->lampiran;
-                                $isImage = false;
-                                $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
-                                $fileExtension = strtolower(pathinfo($lampiranPath, PATHINFO_EXTENSION));
-                                
-                                if(in_array($fileExtension, $imageExtensions)) {
-                                    $isImage = true;
-                                }
-                                
-                                // Cek juga dari helper method jika ada
-                                if(method_exists($laporan, 'is_lampiran_image')) {
-                                    $isImage = $isImage || $laporan->is_lampiran_image;
-                                }
+                                $lampiranUrl = $laporan->lampiran_url;
+                                $isImage = $laporan->is_lampiran_image;
+                                $resolvedPath = parse_url($lampiranPath, PHP_URL_PATH) ?: $lampiranPath;
+                                $fileExtension = strtolower(pathinfo($resolvedPath, PATHINFO_EXTENSION));
                             @endphp
                             
                             @if($isImage)
-                                <img src="{{ asset('storage/' . $lampiranPath) }}" 
+                                <img src="{{ $lampiranUrl }}" 
                                      alt="Lampiran Saat Ini" 
                                      class="h-20 w-auto object-cover rounded border">
                             @else
@@ -128,7 +120,7 @@
                                     <i class="fas fa-paperclip mr-1 text-gray-400"></i>
                                     {{ basename($lampiranPath) }}
                                 </p>
-                                <a href="{{ asset('storage/' . $lampiranPath) }}" 
+                                <a href="{{ $lampiranUrl }}" 
                                    target="_blank" 
                                    class="text-blue-600 text-sm hover:underline inline-flex items-center gap-1 mt-1">
                                     <i class="fas fa-external-link-alt"></i> Lihat Lampiran

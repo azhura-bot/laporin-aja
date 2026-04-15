@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'vercel_blob' => [
+        'enabled' => env('VERCEL_BLOB_ENABLED', true),
+        'token' => env('BLOB_READ_WRITE_TOKEN'),
+        'access' => env('VERCEL_BLOB_ACCESS', 'public'),
+    ],
+
 ];

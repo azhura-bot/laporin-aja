@@ -5,12 +5,17 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Laporan;
 use App\Models\User;
+use App\Services\MediaStorageService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class LaporanController extends Controller
 {
+    public function __construct(
+        private readonly MediaStorageService $mediaStorage
+    ) {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -91,13 +96,8 @@ class LaporanController extends Controller
     {
         $laporan = Laporan::findOrFail($id);
 
-        if ($laporan->lampiran && Storage::disk('public')->exists($laporan->lampiran)) {
-            Storage::disk('public')->delete($laporan->lampiran);
-        }
-
-        if ($laporan->bukti_penanganan && Storage::disk('public')->exists($laporan->bukti_penanganan)) {
-            Storage::disk('public')->delete($laporan->bukti_penanganan);
-        }
+        $this->mediaStorage->deleteFile($laporan->lampiran);
+        $this->mediaStorage->deleteFile($laporan->bukti_penanganan);
 
         $laporan->delete();
 

@@ -88,39 +88,11 @@
                             <!-- Kolom Gambar - DIPERBAIKI -->
                             <td class="px-4 py-4">
                                 @php
-                                    $imageUrl = null;
-                                    $isImage = false;
-                                    $fileExists = false;
-                                    
-                                    if($item->lampiran) {
-                                        // Coba berbagai kemungkinan path
-                                        $possiblePaths = [
-                                            'storage/' . $item->lampiran,
-                                            'storage/lampiran/' . $item->lampiran,
-                                            $item->lampiran
-                                        ];
-                                        
-                                        foreach($possiblePaths as $path) {
-                                            if(file_exists(public_path($path))) {
-                                                $imageUrl = asset($path);
-                                                $fileExists = true;
-                                                break;
-                                            }
-                                        }
-                                        
-                                        // Jika tidak ditemukan, coba langsung dari asset
-                                        if(!$fileExists) {
-                                            $imageUrl = asset('storage/' . $item->lampiran);
-                                        }
-                                        
-                                        // Cek apakah file adalah gambar
-                                        $ext = strtolower(pathinfo($item->lampiran, PATHINFO_EXTENSION));
-                                        $imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
-                                        $isImage = in_array($ext, $imageExts);
-                                    }
+                                    $imageUrl = $item->lampiran_url;
+                                    $isImage = $item->is_lampiran_image;
                                 @endphp
                                 
-                                @if($item->lampiran && $fileExists && $isImage)
+                                @if($item->lampiran && $isImage)
                                     <button onclick="event.stopPropagation(); showImageModal('{{ $imageUrl }}', '{{ addslashes($item->judul_laporan) }}')" 
                                             class="group relative block">
                                         <img src="{{ $imageUrl }}" 
@@ -131,11 +103,12 @@
                                             <i class="fas fa-search-plus text-white text-xs opacity-0 group-hover:opacity-100 transition"></i>
                                         </div>
                                     </button>
-                                @elseif($item->lampiran && $fileExists && !$isImage)
+                                @elseif($item->lampiran && !$isImage)
                                     <a href="{{ $imageUrl }}" target="_blank" onclick="event.stopPropagation()" 
                                        class="flex flex-col items-center gap-1 text-blue-600 hover:text-blue-800">
                                         @php
-                                            $ext = strtolower(pathinfo($item->lampiran, PATHINFO_EXTENSION));
+                                            $path = parse_url($item->lampiran, PHP_URL_PATH) ?: $item->lampiran;
+                                            $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
                                             $icon = 'fa-file';
                                             if($ext == 'pdf') $icon = 'fa-file-pdf';
                                             elseif(in_array($ext, ['doc', 'docx'])) $icon = 'fa-file-word';
@@ -145,11 +118,6 @@
                                         <i class="fas {{ $icon }} text-red-500 text-2xl"></i>
                                         <span class="text-xs">Lihat</span>
                                     </a>
-                                @elseif($item->lampiran && !$fileExists)
-                                    <div class="w-12 h-12 rounded-lg bg-red-50 flex flex-col items-center justify-center">
-                                        <i class="fas fa-exclamation-triangle text-red-400 text-lg"></i>
-                                        <span class="text-xs text-red-400 mt-1">File Hilang</span>
-                                    </div>
                                 @else
                                     <div class="w-12 h-12 rounded-lg bg-gray-100 flex flex-col items-center justify-center">
                                         <i class="fas fa-image text-gray-400 text-lg"></i>

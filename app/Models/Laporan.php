@@ -86,10 +86,15 @@ class Laporan extends Model
     // Accessor untuk lampiran URL
     public function getLampiranUrlAttribute()
     {
-        if ($this->lampiran) {
-            return asset('storage/' . $this->lampiran);
+        if (! $this->lampiran) {
+            return null;
         }
-        return null;
+
+        if (filter_var($this->lampiran, FILTER_VALIDATE_URL)) {
+            return $this->lampiran;
+        }
+
+        return asset('storage/' . ltrim($this->lampiran, '/'));
     }
 
     // Cek apakah lampiran adalah gambar
@@ -98,7 +103,8 @@ class Laporan extends Model
         if (!$this->lampiran) return false;
         
         $extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
-        $extension = strtolower(pathinfo($this->lampiran, PATHINFO_EXTENSION));
+        $path = parse_url($this->lampiran, PHP_URL_PATH) ?: $this->lampiran;
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
         
         return in_array($extension, $extensions);
     }
@@ -106,11 +112,15 @@ class Laporan extends Model
     // Accessor untuk bukti penanganan URL
     public function getBuktiPenangananUrlAttribute()
     {
-        if ($this->bukti_penanganan) {
-            return asset('storage/' . $this->bukti_penanganan);
+        if (! $this->bukti_penanganan) {
+            return null;
         }
 
-        return null;
+        if (filter_var($this->bukti_penanganan, FILTER_VALIDATE_URL)) {
+            return $this->bukti_penanganan;
+        }
+
+        return asset('storage/' . ltrim($this->bukti_penanganan, '/'));
     }
 
     // Cek apakah bukti penanganan adalah gambar
@@ -119,7 +129,8 @@ class Laporan extends Model
         if (!$this->bukti_penanganan) return false;
 
         $extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
-        $extension = strtolower(pathinfo($this->bukti_penanganan, PATHINFO_EXTENSION));
+        $path = parse_url($this->bukti_penanganan, PHP_URL_PATH) ?: $this->bukti_penanganan;
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
         return in_array($extension, $extensions);
     }
