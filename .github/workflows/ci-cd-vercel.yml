@@ -70,7 +70,7 @@ jobs:
           cache: npm
 
       - name: Install Vercel CLI
-        run: npm install --global vercel@47.2.2
+        run: npm install --global vercel@51.3.0
 
       - name: Check Vercel CLI version
         run: vercel --version
@@ -104,7 +104,7 @@ jobs:
           cache: npm
 
       - name: Install Vercel CLI
-        run: npm install --global vercel@47.2.2
+        run: npm install --global vercel@51.3.0
 
       - name: Check Vercel CLI version
         run: vercel --version
