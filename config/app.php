@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\ServiceProvider;
+
 return [
 
     /*
@@ -122,5 +124,18 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    /*
+    |----------------------------------------------------------------------
+    | Service Providers
+    |----------------------------------------------------------------------
+    |
+    | Keeping providers explicit here prevents runtime issues when config
+    | cache is enabled in serverless environments.
+    |
+    */
+    'providers' => ServiceProvider::defaultProviders()->merge([
+        App\Providers\AppServiceProvider::class,
+    ])->toArray(),
 
 ];
