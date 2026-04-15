@@ -11,6 +11,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: vercel-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     name: CI (Test + Build)
@@ -116,4 +120,53 @@ jobs:
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy production
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          max_attempts=3
+          attempt=1
+
+          while [ "$attempt" -le "$max_attempts" ]; do
+            echo "Production deploy attempt $attempt/$max_attempts"
+
+            set +e
+            deploy_output="$(vercel deploy --prebuilt --prod --yes --logs --token=${{ secrets.VERCEL_TOKEN }} 2>&1)"
+            deploy_exit=$?
+            set -e
+
+            echo "$deploy_output"
+
+            deploy_url="$(echo "$deploy_output" | grep -Eo 'https://[^ ]+\\.vercel\\.app' | tail -n1 || true)"
+
+            if [ "$deploy_exit" -eq 0 ]; then
+              echo "Deploy command succeeded."
+              exit 0
+            fi
+
+            if [ -n "$deploy_url" ]; then
+              echo "Deploy command failed but URL detected: $deploy_url"
+              echo "Checking final status via inspect..."
+
+              set +e
+              inspect_output="$(vercel inspect "$deploy_url" --wait --timeout=5m --token=${{ secrets.VERCEL_TOKEN }} 2>&1)"
+              inspect_exit=$?
+              set -e
+
+              echo "$inspect_output"
+
+              if [ "$inspect_exit" -eq 0 ]; then
+                echo "Deployment is READY after inspect."
+                exit 0
+              fi
+            fi
+
+            if [ "$attempt" -lt "$max_attempts" ]; then
+              sleep_seconds=$((attempt * 20))
+              echo "Retrying in ${sleep_seconds}s..."
+              sleep "$sleep_seconds"
+            fi
+
+            attempt=$((attempt + 1))
+          done
+
+          echo "Production deploy failed after $max_attempts attempts."
+          exit 1
