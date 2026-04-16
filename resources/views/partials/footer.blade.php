@@ -74,7 +74,7 @@
 
         <!-- Copyright -->
         <div class="border-t border-white/20 pt-6 text-center text-blue-100 text-sm">
-            &copy; 2025 LaporinAja. Semua Hak Dilindungi.
+            &copy; 2026 LaporinAja. Semua Hak Dilindungi.
         </div>
     </div>
 </footer>
