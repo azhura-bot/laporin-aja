@@ -15,6 +15,7 @@ $writableDirs = [
     '/tmp/storage/logs',
 ];
 
+
 foreach ($writableDirs as $dir) {
     if (! is_dir($dir)) {
         @mkdir($dir, 0777, true);
